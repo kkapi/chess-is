@@ -5,7 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import Balance from 'react-wrap-balancer';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Castle } from 'lucide-react';
+import {
+	BookMarked,
+	BrainCircuit,
+	Castle,
+	Cpu,
+	Newspaper,
+	Search,
+	UserRoundSearch,
+	UsersRound,
+} from 'lucide-react';
 import { GraduationCap } from 'lucide-react';
 import { CalendarSearch } from 'lucide-react';
 import { Home } from 'lucide-react';
@@ -20,19 +29,19 @@ const HomePage = () => {
 			<div className="container relative">
 				<section
 					className={cn(
-						'mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20'
+						'mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-6 md:pb-8 lg:py-24 lg:pb-20'
 					)}
 				>
 					<h1
 						className={cn(
-							'text-center text-3xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1]'
+							'text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]'
 						)}
 					>
 						Информационная система «Шахматы»
 					</h1>
 					<Balance
 						className={cn(
-							'max-w-[750px] text-center text-lg text-muted-foreground sm:text-xl mt-5 mb-4 '
+							'max-w-[750px] text-center text-lg text-muted-foreground sm:text-xl mt-5'
 						)}
 					>
 						Добро пожаловать в информационную систему «Шахматы»! Мы создали
@@ -43,37 +52,39 @@ const HomePage = () => {
 						возможностей и окунуться в мир стратегий и интеллектуальных вызовов
 						прямо сейчас!
 					</Balance>
-					<div
-						className={cn(
-							'flex w-full items-center justify-center space-x-4 py-4 md:pb-10'
-						)}
-					>
-						<Button className='md:text-base'>Войти</Button>
-						<Button className='md:text-base' variant="outline">Регистрация</Button>
-					</div>
+					{true && (
+						<div
+							className={cn(
+								'flex w-full items-center justify-center space-x-4 py-4 md:pb-10 mt-4'
+							)}
+						>
+							<Button className="md:text-base">Войти</Button>
+							<Button className="md:text-base" variant="outline">
+								Регистрация
+							</Button>
+						</div>
+					)}
 				</section>
 
 				<Separator />
 
-				<div className="mt-12 grid gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+				<div className="mt-10 md:mt-16 grid gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
 					<Card
 						onClick={() => navigate('/places')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">
-								Интересные места
-							</CardTitle>
+							<CardTitle className="text-2xl font-medium">Найти игру</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Узнайте о лучших местах в городе для занятий и работы в удобной
-								и красивой обстановке. Мы предоставили список мест, которые
-								отличаются не только своей привлекательностью, но и обладают
-								такими удобствами, как бесплатные точки доступа Wi-Fi,
-								общественные туалеты и ближайшие станции метро.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Найдите соперника для игры в шахматы. Выберете режим и нажмите
+								кнопку "Поиск". Когда оппонент найден, оба игрока
+								перенаправляются в персональную комнату для игры в шахматы. Для
+								авторизованных и неавторизованных пользователей существует две
+								разные очереди подбора.
 							</p>
-							<Castle className="w-1/6 h-auto" />
+							<UserRoundSearch className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 					<Card
@@ -81,19 +92,18 @@ const HomePage = () => {
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">
-								Поступление в ВУЗ
+							<CardTitle className="text-2xl font-medium">
+								Играть с друзьями
 							</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Исследуйте мир образования! Подберите ВУЗ для поступления по
-								проходным баллам, предметам для сдачи, профессиям и другим
-								параметрам. Найдите идеальное образовательное направление для
-								вашего будущего. Планируйте свое обучение с удобством и
-								точностью, открывая двери к успешной карьере.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Здесь вы можете создать персональную комнату для игры с вашими
+								друзьями. Просто скопируйте уникальный идентификатор комнаты и
+								отправьте его вашим друзьям, чтобы начать игру. Приглашайте
+								знакомых на увлекательные матчи и наслаждайтесь игрой вместе.
 							</p>
-							<GraduationCap className="w-1/6 h-auto" />
+							<UsersRound className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 					<Card
@@ -101,19 +111,19 @@ const HomePage = () => {
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">
-								Смена направления
+							<CardTitle className="text-2xl font-medium">
+								Играть с компьютером
 							</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Раздел "Подбор программы обучения" предназначен для помощи
-								студентам при переходе с одной программы обучения на другую с
-								учетом различных факторов. Здесь вы сможете найти информацию о
-								подходящих программных курсах, учитывая ваши учебные планы и
-								желаемую профессию.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Сыграйте партию в шахматы против умного компьютерного соперника!
+								Вы можете выбрать уровень сложности, чтобы подобрать подходящего
+								оппонента. Игра против компьютера - отличная возможность
+								улучшить свои шахматные навыки, а также просто весело провести
+								время.
 							</p>
-							<Replace className="w-1/6 h-auto" />
+							<Cpu className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 					<Card
@@ -121,18 +131,18 @@ const HomePage = () => {
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">
-								Подбор жилья
+							<CardTitle className="text-2xl font-medium">
+								Анализировать партии
 							</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Найдите свое идеальное студенческое жилье, где ты сможешь удобно
-								и комфортно жить во время учебы в Санкт-Петербурге. Наша
-								платформа предоставляет информацию и удобный поиск студенческого
-								жилья, которое соответствует вашим потребностям и бюджету.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Погрузитесь в мир стратегии и тактики шахмат с возможностью
+								анализировать ваши партии. Разбирайте свои ходы, обсуждайте
+								улучшайте свою игру. Вы запустить анализ с начальной позиции или
+								загрузить партии в форматах PGN и FEN.
 							</p>
-							<Home className="w-1/6 h-auto" />
+							<BrainCircuit className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 					<Card
@@ -140,17 +150,16 @@ const HomePage = () => {
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">Мероприятия</CardTitle>
+							<CardTitle className="text-2xl font-medium">Новости</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Найдите разнообразные мероприятия, которые помогут развивать
-								ваши профессиональные навыки. Наша платформа учитывает близость
-								к вашему дому, работе или учебе, а также место проведения
-								занятий, чтобы предложить наиболее удобные и полезные
-								мероприятия для вас.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Здесь публикуются свежие новости, анонсы предстоящих турниров и
+								другая полезная информация для любителей этой игры. Вы можете не
+								только читать новости, но и делиться своими мыслями в
+								комментариях.
 							</p>
-							<CalendarSearch className="w-1/6 h-auto" />
+							<Newspaper className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 
@@ -159,62 +168,53 @@ const HomePage = () => {
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xl font-medium">
-								Дополнительное образование
-							</CardTitle>
+							<CardTitle className="text-2xl font-medium">Материалы</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
-							<p className="text-xs text-muted-foreground w-5/6">
-								Ознакомьтесь с программами дополнительного образования для
-								студентов. Откройте широкий спектр курсов, мастер-классов и
-								возможностей углубленного обучения, предназначенных для
-								улучшения академических результатов, расширения кругозора и
-								развития личности.
+							<p className="text-sm text-muted-foreground w-5/6">
+								Здесь вы найдете базовую информацию о шахматах, которая поможет
+								вам погрузиться в мир этой увлекательной игры. Кроме того, вы
+								сможете скачать шаблоны документов, которые могут быть полезны
+								при обучении, проведении турниров или организации шахматных
+								мероприятий.
 							</p>
-							<BookOpenText className="w-1/6 h-auto" />
+							<BookMarked className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 				</div>
-				<Separator className="mt-12 " />
+				<Separator className="mt-10 md:mt-16" />
 
 				<div className="grid mt-8 gap-8 grid-cols-1 md:grid-cols-2 md:mt-24 md:mb-12">
 					<div className="flex flex-col items-center gap-4">
-						<h1 className="text-xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
-							Хакатон ПРОСТОxЛЭТИ
-						</h1>
+						<Balance className="text-2xl text-center font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
+							Выпускная квалификационная работа бакалавра
+						</Balance>
 						<Balance
 							className={cn(
-								'max-w-[750px] text-center text-sm text-muted-foreground'
+								'max-w-[750px] text-center text-base text-muted-foreground whitespace-pre-line'
 							)}
 						>
-							Данный цифровой сервис был реализован в рамках двухдневного{' '}
-							<a
-								href={'https://www.prostospb.team/hackaton_etu'}
-								target="_blank"
-								rel="noreferrer"
-								className="font-medium underline underline-offset-4"
-							>
-								хакатона
-							</a>
-							, проходящего с 20 по 21 апреля в молодежном пространстве "ПРОСТО"
-							на Карповке. Номинация «Лучший цифровой сервис Санкт-Петербурга»
+							Данный проект был реализован в рамках выполнения выпускной
+							квалификационной работы. Студент группы 0371 Копылов Кирилл
+							Андреевич. Тема: Разработка информационной системы «Шахматы».
 						</Balance>
 					</div>
-					<div className="flex flex-col items-center gap-4">
-						<h1 className="text-xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
-							Марафон "Цифровой Петербург"
-						</h1>
+					<div className="flex flex-col items-center gap-4 mb-4">
+						<Balance className="text-2xl text-center font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1] whitespace-pre-line">
+							Университет{'\n'}
+							СПбГЭТУ «ЛЭТИ»
+						</Balance>
 						<Balance
 							className={cn(
-								'max-w-[750px] text-center text-sm text-muted-foreground'
+								'max-w-[750px] text-center text-base text-muted-foreground whitespace-pre-line'
 							)}
 						>
-							Конкурс «Марафон «Цифровой Петербург» проводится в два этапа с 12
-							по 21 апреля 2024 года. Организаторами Марафона выступают СПбГЭТУ
-							«ЛЭТИ», Цифровая кафедра университета, ГУП Санкт-Петербургский
-							информационно-аналитический центр (СПб ИАЦ), ООО «СИГМА» и
-							молодёжное пространство «ПРОСТО». Технологический партнер конкурса
-							– Yandex Cloud.
+							«Санкт-Петербургский государственный электротехнический
+							университет «ЛЭТИ» им. В.И.Ульянова (Ленина)» (СПбГЭТУ «ЛЭТИ»).
+							Направление 09.03.02 - Информационные системы и технологии.
+							Профиль - Информационные системы и технологии в бизнесе. Факультет
+							компьютерных технологий и информатики. Кафедра автоматики и
+							процессов управления.
 						</Balance>
 					</div>
 				</div>

@@ -6,7 +6,7 @@ import { ModeToggle } from "./ModeToggle";
 
 const Header = () => {
   return (
-		<header className="sticky top-0 z-50 w-full flex h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
+		<header className="sticky top-0 z-50 w-full flex justify-between h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
 			<nav className="container hidden flex-col gap-6 font-medium md:flex md:flex-row md:items-center md:justify-between w-full md:gap-5 md:text-lg lg:gap-6">
 				<Link
 					to="/"
@@ -68,51 +68,58 @@ const Header = () => {
 							to="/"
 							className="flex items-center gap-2 text-xl font-semibold"
 						>
-							<NotebookPen className="h-7 w-7" />
-							<span>Ассистент студента</span>
+							<Crown className="w-8 h-8 mr-1"/>
+							<span>Шахматы</span>
 						</Link>
 						<Link
 							to="/"
 							className="text-muted-foreground hover:text-foreground"
 						>
-							Интересные места
+							Найти игру
 						</Link>
 						<Link
 							to="/"
 							className="text-muted-foreground hover:text-foreground"
 						>
-							Поступление в ВУЗ
+							Играть с друзьями
 						</Link>
 						<Link
 							to="/"
 							className="text-muted-foreground hover:text-foreground"
 						>
-							Смена направления
+							Играть с компьютером
 						</Link>
 						<Link
 							to="/"
 							className="text-muted-foreground hover:text-foreground"
 						>
-							Подбор жилья
-						</Link>
-
-						<Link
-							to="/"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Мероприятия
+							Анализ
 						</Link>
 
 						<Link
 							to="/"
 							className="text-muted-foreground hover:text-foreground"
 						>
-							Подбор программ доп. образования
+							Новости
+						</Link>
+
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Материалы
 						</Link>
 					</nav>
 				</SheetContent>
 			</Sheet>
-			<span className="ml-auto md:hidden">
+      <Link
+					to="/"
+					className="flex items-center gap-2 font-semibold md:hidden text-xl"
+				>
+					<Crown className="w-8 h-8 mr-1"/>
+					<span>Шахматы</span>
+			</Link>
+			<span className="md:hidden">
 				<ModeToggle />
 			</span>
 		</header>
