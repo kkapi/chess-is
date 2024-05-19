@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CreateGamePage = () => {
+const CreateRoomPage = () => {
   return (
     <div>CreateGame</div>
   )
 }
 
-export default CreateGamePage
+export default CreateRoomPage

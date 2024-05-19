@@ -1,14 +1,14 @@
-import { RegistrationForm } from '@/components/RegistrationForm';
+import { RecoveryForm } from '@/components/RecoveryFrom';
 import DefaultLayout from '@/layouts/DefaultLayout';
 
-const RegistrationPage = () => {
+const RecoveryPage = () => {
 	return (
 		<div className="min-h-screen min-w-screen flex flex-col justify-between">
 			<DefaultLayout>
-				<RegistrationForm />
+				<RecoveryForm />
 			</DefaultLayout>
 		</div>
 	);
 };
 
-export default RegistrationPage;
+export default RecoveryPage;

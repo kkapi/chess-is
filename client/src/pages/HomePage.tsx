@@ -8,21 +8,19 @@ import { Button } from '@/components/ui/button';
 import {
 	BookMarked,
 	BrainCircuit,
-	Castle,
 	Cpu,
 	Newspaper,
-	Search,
 	UserRoundSearch,
 	UsersRound,
 } from 'lucide-react';
-import { GraduationCap } from 'lucide-react';
-import { CalendarSearch } from 'lucide-react';
-import { Home } from 'lucide-react';
-import { BookOpenText } from 'lucide-react';
-import { Replace } from 'lucide-react';
+import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '@/lib/constants';
+import { useContext } from 'react';
+import { Context } from '@/main';
+import { observer } from 'mobx-react-lite';
 
 const HomePage = () => {
 	const navigate = useNavigate();
+	const { store } = useContext(Context);
 
 	return (
 		<DefaultLayout>
@@ -52,14 +50,27 @@ const HomePage = () => {
 						возможностей и окунуться в мир стратегий и интеллектуальных вызовов
 						прямо сейчас!
 					</Balance>
-					{true && (
+					{!store.isAuth && (
 						<div
 							className={cn(
 								'flex w-full items-center justify-center space-x-4 py-4 md:pb-10 mt-4'
 							)}
 						>
-							<Button className="md:text-base">Войти</Button>
-							<Button className="md:text-base" variant="outline">
+							<Button
+								className="md:text-base"
+								onClick={() => {
+									navigate(LOGIN_ROUTE);
+								}}
+							>
+								Войти
+							</Button>
+							<Button
+								className="md:text-base"
+								variant="outline"
+								onClick={() => {
+									navigate(REGISTRATION_ROUTE);
+								}}
+							>
 								Регистрация
 							</Button>
 						</div>
@@ -70,7 +81,7 @@ const HomePage = () => {
 
 				<div className="mt-10 md:mt-16 grid gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
 					<Card
-						onClick={() => navigate('/places')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -88,7 +99,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/universities')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -107,7 +118,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/change')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -127,7 +138,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/apartments')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -146,7 +157,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/activities')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -164,7 +175,7 @@ const HomePage = () => {
 					</Card>
 
 					<Card
-						onClick={() => navigate('/education')}
+						onClick={() => navigate('/')}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -223,4 +234,4 @@ const HomePage = () => {
 	);
 };
 
-export default HomePage;
+export default observer(HomePage);

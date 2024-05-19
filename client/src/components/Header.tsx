@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { Menu, NotebookPen, Crown } from 'lucide-react';
+import { Menu, Crown } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./ModeToggle";
 
 const Header = () => {
+  
+
   return (
 		<header className="sticky top-0 z-50 w-full flex justify-between h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
 			<nav className="container hidden flex-col gap-6 font-medium md:flex md:flex-row md:items-center md:justify-between w-full md:gap-5 md:text-lg lg:gap-6">

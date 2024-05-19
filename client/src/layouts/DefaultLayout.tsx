@@ -1,18 +1,18 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 
 type DefaultLayoutProps = {
-  children: React.ReactElement;
+	children: React.ReactElement;
 };
 
-const DefaultLayout = ({children} : DefaultLayoutProps) => {
-  return (
-    <>
-      <Header />
-      {children}
-      <Footer />
-    </>
-  )
-}
+const DefaultLayout = ({ children }: DefaultLayoutProps) => {
+	return (
+		<>
+			<Header />
+			{children}
+			<Footer />
+		</>
+	);
+};
 
-export default DefaultLayout
+export default DefaultLayout;
