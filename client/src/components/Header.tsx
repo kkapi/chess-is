@@ -1,0 +1,122 @@
+import { Link } from "react-router-dom";
+import { Menu, NotebookPen, Crown } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Button } from "./ui/button";
+import { ModeToggle } from "./ModeToggle";
+
+const Header = () => {
+  return (
+		<header className="sticky top-0 z-50 w-full flex h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
+			<nav className="container hidden flex-col gap-6 font-medium md:flex md:flex-row md:items-center md:justify-between w-full md:gap-5 md:text-lg lg:gap-6">
+				<Link
+					to="/"
+					className="flex items-center gap-2 font-semibold md:text-xl"
+				>
+					<Crown className="w-8 h-8 mr-1"/>
+					<span>Шахматы</span>
+				</Link>
+				<Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Найти игру
+				</Link>
+        <Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Играть с друзьями
+				</Link>
+        <Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Играть с компьютером
+				</Link>
+        
+				<Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Анализ
+				</Link>
+				<Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Новости
+				</Link>
+				<Link
+					to="/"
+					className="text-muted-foreground transition-colors hover:text-foreground"
+				>
+					Материалы
+				</Link>
+
+				<ModeToggle />
+			</nav>
+			<Sheet>
+				<SheetTrigger asChild>
+					<Button variant="outline" size="icon" className="shrink-0 md:hidden">
+						<Menu className="h-5 w-5" />
+						<span className="sr-only">Меню навигации</span>
+					</Button>
+				</SheetTrigger>
+				<SheetContent side="left">
+					<nav className="grid gap-6 text-lg font-medium">
+						<Link
+							to="/"
+							className="flex items-center gap-2 text-xl font-semibold"
+						>
+							<NotebookPen className="h-7 w-7" />
+							<span>Ассистент студента</span>
+						</Link>
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Интересные места
+						</Link>
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Поступление в ВУЗ
+						</Link>
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Смена направления
+						</Link>
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Подбор жилья
+						</Link>
+
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Мероприятия
+						</Link>
+
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground"
+						>
+							Подбор программ доп. образования
+						</Link>
+					</nav>
+				</SheetContent>
+			</Sheet>
+			<span className="ml-auto md:hidden">
+				<ModeToggle />
+			</span>
+		</header>
+	);
+}
+
+export default Header
