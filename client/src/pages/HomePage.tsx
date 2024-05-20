@@ -13,7 +13,7 @@ import {
 	UserRoundSearch,
 	UsersRound,
 } from 'lucide-react';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '@/lib/constants';
+import { ANALYSIS_ROUTE, COMPUTER_ROUTE, FINDGAME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, REGISTRATION_ROUTE } from '@/lib/constants';
 import { useContext } from 'react';
 import { Context } from '@/main';
 import { observer } from 'mobx-react-lite';
@@ -81,7 +81,7 @@ const HomePage = () => {
 
 				<div className="mt-10 md:mt-16 grid gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(FINDGAME_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -99,7 +99,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(NEWROOM_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -118,7 +118,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(COMPUTER_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -138,7 +138,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(ANALYSIS_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -157,7 +157,7 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(NEWS_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -175,7 +175,7 @@ const HomePage = () => {
 					</Card>
 
 					<Card
-						onClick={() => navigate('/')}
+						onClick={() => navigate(MATERIALS_ROUTE)}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
