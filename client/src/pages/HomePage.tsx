@@ -17,6 +17,8 @@ import { ANALYSIS_ROUTE, COMPUTER_ROUTE, FINDGAME_ROUTE, LOGIN_ROUTE, MATERIALS_
 import { useContext } from 'react';
 import { Context } from '@/main';
 import { observer } from 'mobx-react-lite';
+import { logout } from '@/http/userAPI';
+import axios from 'axios';
 
 const HomePage = () => {
 	const navigate = useNavigate();
@@ -75,6 +77,72 @@ const HomePage = () => {
 							</Button>
 						</div>
 					)}
+         {/*  <button className='border border-red-500' onClick={async () => {
+            try {
+              const response = await fetch('http://localhost:5000/user/setcookie', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({hi: 1}),
+              });
+          
+              if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+              }
+          
+              const result = await response.json();
+              console.log(result);
+            } catch (error) {
+              console.error('Ошибка при отправке POST-запроса:', error);
+            }
+          }}>SET COOKIE</button> */}
+{/*           <button className='border border-red-500' onClick={async () => {
+             try {
+              const response = await fetch('http://localhost:5000/user/test', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({hi: 1}),
+              });
+          
+              if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+              }
+          
+              const result = await response.json();
+              console.log(result);
+            } catch (error) {
+              console.error('Ошибка при отправке POST-запроса:', error);
+            }
+          }}>GET COOKIES</button> */}
+          {store.isAuth && <button className='border border-red-500' onClick={async () => {
+             try {
+              const response = await fetch('http://localhost:5000/user/logout', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({hi: 1}),
+              });
+          
+              if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+              }
+          
+              const result = await response.json();
+
+              store.isAuth = false;
+              store.user = null;
+              console.log(result);
+            } catch (error) {
+              console.error('Ошибка при отправке POST-запроса:', error);
+            }
+          }}>LOGOUT</button>}
 				</section>
 
 				<Separator />

@@ -10,6 +10,14 @@ const tokenService = require('./token-service');
 
 class UserService {
 	async registration(email, password, login) {
+		const existLogin = await User.findOne({
+			where: { login },
+		});
+
+		if (existLogin) {
+			throw ApiError.BadRequest(`Данный логин занят`);
+		}
+
 		const candidate = await User.findOne({
 			where: { email, isActivated: true },
 		});
@@ -87,11 +95,7 @@ class UserService {
 		});
 
 		if (!user) {
-			return next(
-				ApiError.BadRequest(
-					'Подтвержденный пользователь с таким email не найден'
-				)
-			);
+			throw ApiError.BadRequest('Подтвержденный пользователь с таким email не найден');
 		}
 
 		if (user.isBlocked) {
@@ -130,7 +134,7 @@ class UserService {
 		const user = await User.findOne({ where: { login } });
 
 		if (!user) {
-			throw ApiError.BadRequest('Пользователь с таким login не найден');
+			throw ApiError.BadRequest('Пользователь с таким логином не найден');
 		}
 
 		if (!user.isActivated) {
@@ -212,16 +216,16 @@ class UserService {
 		return users;
 	}
 
-  async isFreeLogin(login) {
-    const user = await User.findOne({
-      where: {
-        login,
-        isActivated: true,
-      }
-    })
+	async isFreeLogin(login) {
+		const user = await User.findOne({
+			where: {
+				login,
+				isActivated: true,
+			},
+		});
 
-    return !user;
-  }
+		return !user;
+	}
 }
 
 module.exports = new UserService();

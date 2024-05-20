@@ -5,37 +5,32 @@ const ApiError = require('../exceptions/api-error');
 class UserController {
 	async registration(req, res, next) {
 		try {
-			const errors = validationResult(req);
-			if (!errors.isEmpty()) {
-				return next(ApiError.BadRequest('Ошибка валидации', errors.array()));
-			}
-
 			const { email, password, login } = req.body;
 
-			const userData = await userService.registration(email, password, login);
+			const userData = await userService.registration(email.toLowerCase(), password, login);
 
 			res.cookie('refreshToken', userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 1000,
 				httpOnly: true,
 			});
-			return res.json(userData);
+			res.json(userData);
 		} catch (error) {
 			next(error);
 		}
 	}
 
-	async login(req, res, next) {
+	async login(req, res, next) { /* AAAAAAAAAAAAAAAAAAAAAAAAAAA ТУТ НЕ ЗАБЫВТЬ ПОМЕНЯТЬ ОБРАТНО НА ТОЕК */
 		try {
 			const { email, password, login } = req.body;
 
 			const userData = await userService.login(email, password, login);
 
-			res.cookie('refreshToken', userData.refreshToken, {
+      console.log({USERDATA: userData})
+
+			res.cookie('refreshToken', userData.refreshToken, { /* ТУТ ДЕБАЖУ token */
 				maxAge: 30 * 24 * 60 * 1000,
 				httpOnly: true,
-			});
-
-			return res.json(userData);
+			}).json(userData);
 		} catch (error) {
 			next(error);
 		}
@@ -44,9 +39,11 @@ class UserController {
 	async logout(req, res, next) {
 		try {
 			const { refreshToken } = req.cookies;
+      console.log({refreshToken}); 
 			const token = await userService.logout(refreshToken);
 			res.clearCookie('refreshToken');
-			return res.status(200).json({ token });
+      res.clearCookie('user');
+			res.status(200).json('Очистили');
 		} catch (error) {
 			next(error);
 		}
@@ -58,7 +55,7 @@ class UserController {
 
 			await userService.activate(activationLink);
 
-			return res.redirect(process.env.CLIENT_URL);
+			res.redirect(`${process.env.CLIENT_URL}/login`);
 		} catch (error) {
 			next(error);
 		}
@@ -67,9 +64,10 @@ class UserController {
 	async recoverPassword(req, res, next) {
 		try {
 			const { email } = req.body;
-			await userService.recoverPassword(email);
+     
+			await userService.recoverPassword(email.toLowerCase());
 
-			res.status(200).json({ ok: true });
+			res.status(200).json({ email });
 		} catch (error) {
 			next(error);
 		}
@@ -89,15 +87,19 @@ class UserController {
 
 	async refresh(req, res, next) {
 		try {
+      console.log("IM HERE")
 			const { refreshToken } = req.cookies;
+      console.log(refreshToken);
 
 			const userData = await userService.refresh(refreshToken);
-			res.cookie('refreshToken', userData.refreshToken, {
+			
+
+      console.log({USERDATA: userData})
+
+      res.cookie('refreshToken', userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 1000,
 				httpOnly: true,
-			});
-
-			return res.json(userData);
+			}).json(userData);
 		} catch (error) {
 			next(error);
 		}

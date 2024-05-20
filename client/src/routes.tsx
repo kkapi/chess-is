@@ -71,5 +71,4 @@ export const routes = [
     path: CREATENEWS_ROUTE,
     element: <CreateNewsPage />,
   },
-
 ]

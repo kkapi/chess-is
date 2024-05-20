@@ -5,7 +5,9 @@ const RegistrationPage = () => {
 	return (
 		<div className="min-h-screen min-w-screen flex flex-col justify-between">
 			<DefaultLayout>
-				<RegistrationForm />
+				<div className="flex">
+					<RegistrationForm />
+				</div>
 			</DefaultLayout>
 		</div>
 	);

@@ -16,7 +16,7 @@ const Footer = () => {
 					
 					. Исходный код доступен на{' '}
 					<a
-						href={'https://github.com/kkapi/hackathon'}
+						href={'https://github.com/kkapi/'}
 						target="_blank"
 						rel="noreferrer"
 						className="font-medium underline underline-offset-4"
