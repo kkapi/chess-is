@@ -29,6 +29,7 @@ import { AlertCircle } from 'lucide-react';
 import Balance from 'react-wrap-balancer';
 import { useContext } from 'react';
 import { Context } from '@/main';
+import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
 	login: z
@@ -59,9 +60,9 @@ export function LoginForm() {
 	} = form;
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+    await new Promise(res => setTimeout(res, 500))
 		try {
 			const data = await login(values.login, values.password);
-      console.log({USERDATRA: data});
 			store.isAuth = true;
 			store.user = data.user;
       localStorage.setItem('token', data.accessToken);
@@ -141,7 +142,7 @@ export function LoginForm() {
 								/>
 							</div>
 							<Button disabled={isSubmitting} type="submit" className="w-full">
-								{isSubmitting ? 'Обработка...' : 'Войти'}
+								{isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Обработка...</> : 'Войти'}
 							</Button>
 						</div>
 						<div className="mt-4 text-center text-sm">

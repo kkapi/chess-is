@@ -155,6 +155,7 @@ class UserService {
 			email: user.email,
 			isActivated: user.isActivated,
 			login: user.login,
+      role: user.role,
 		});
 
 		await tokenService.saveToken(user.id, refreshToken);
@@ -167,6 +168,7 @@ class UserService {
 				email: user.email,
 				isActivated: user.isActivated,
 				login: user.login,
+        role: user.role,
 			},
 		};
 	}
@@ -194,6 +196,7 @@ class UserService {
 			email: user.email,
 			isActivated: user.isActivated,
 			login: user.login,
+      role: user.role,
 		});
 
 		await tokenService.saveToken(user.id, tokens.refreshToken);
@@ -205,6 +208,7 @@ class UserService {
 				email: user.email,
 				isActivated: user.isActivated,
 				login: user.login,
+        role: user.role,
 			},
 		};
 	}

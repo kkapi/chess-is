@@ -7,6 +7,7 @@ const models = require('./models/models');
 
 const cors = require('cors');
 const cookies = require('cookie-parser');
+const path = require('path')
 
 const router = require('./routes');
 
@@ -23,6 +24,7 @@ app.use(
 	})
 );
 app.use(cookies());
+app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(express.json());
 app.use(router);
 app.use(errorMiddleware);

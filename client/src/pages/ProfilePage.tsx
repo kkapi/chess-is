@@ -1,8 +1,12 @@
-import React from 'react'
+import DefaultLayout from "@/layouts/DefaultLayout"
 
 const ProfilePage = () => {
   return (
-    <div>ProfilePage</div>
+    <div className="min-h-screen min-w-screen flex flex-col justify-between">
+			<DefaultLayout>
+				<div>ProfilePage</div>
+			</DefaultLayout>
+		</div>
   )
 }
 

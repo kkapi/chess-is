@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardTitle } from './ui/card';
 import { HOME_ROUTE, LOGIN_ROUTE } from '@/lib/constants';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import Balance from 'react-wrap-balancer';
 import { useState } from 'react';
 import { registration } from '@/http/userAPI';
@@ -109,7 +109,7 @@ export function RegistrationForm() {
 										{errors.root && (
 											<div className="border bg-red-50 border-red-600 p-1 gap-3 flex justify-start items-center rounded">
 												<AlertCircle className="ml-1 h-6 w-6" color="#df1b1b" />
-												<Balance className="text-sm">
+												<Balance className="text-sm text-muted-foreground">
 													{errors.root.message}
 												</Balance>
 											</div>
@@ -190,7 +190,7 @@ export function RegistrationForm() {
 											type="submit"
 											className="mt-2"
 										>
-											{isSubmitting ? 'Обработка...' : 'Зарегистрироваться'}
+											{isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Обработка...</> : 'Зарегистрироваться'}
 										</Button>
 									</div>
 									<div className="mt-4 text-center text-sm">

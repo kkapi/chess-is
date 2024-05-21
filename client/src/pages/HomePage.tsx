@@ -73,7 +73,7 @@ const HomePage = () => {
 									navigate(REGISTRATION_ROUTE);
 								}}
 							>
-								Регистрация
+								Зарегистрироваться
 							</Button>
 						</div>
 					)}
@@ -119,30 +119,7 @@ const HomePage = () => {
               console.error('Ошибка при отправке POST-запроса:', error);
             }
           }}>GET COOKIES</button> */}
-          {store.isAuth && <button className='border border-red-500' onClick={async () => {
-             try {
-              const response = await fetch('http://localhost:5000/user/logout', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({hi: 1}),
-              });
           
-              if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-              }
-          
-              const result = await response.json();
-
-              store.isAuth = false;
-              store.user = null;
-              console.log(result);
-            } catch (error) {
-              console.error('Ошибка при отправке POST-запроса:', error);
-            }
-          }}>LOGOUT</button>}
 				</section>
 
 				<Separator />

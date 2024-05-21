@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Crown } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Button } from './ui/button';
@@ -8,15 +8,33 @@ import {
 	COMPUTER_ROUTE,
 	FINDGAME_ROUTE,
 	HOME_ROUTE,
+	LOGIN_ROUTE,
 	MATERIALS_ROUTE,
 	NEWROOM_ROUTE,
 	NEWS_ROUTE,
+	PROFILE_ROUTE,
+	REGISTRATION_ROUTE,
 } from '@/lib/constants';
 import { useContext } from 'react';
 import { Context } from '@/main';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { useTheme } from './ThemeProvider';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Badge } from './ui/badge';
+import { getRole } from '@/lib/utils';
+import { Separator } from './ui/separator';
 
 const Header = () => {
 	const { store } = useContext(Context);
+	const navigate = useNavigate();
+	const { setTheme } = useTheme();
 
 	return (
 		<header className="sticky top-0 z-50 w-full flex justify-between h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
@@ -53,22 +71,114 @@ const Header = () => {
 				>
 					Анализ
 				</Link>
-				<Link
+				{/* <Link
 					to={NEWS_ROUTE}
 					className="text-muted-foreground transition-colors hover:text-foreground"
 				>
 					Новости
-				</Link>
+				</Link> */}
 				<Link
 					to={MATERIALS_ROUTE}
 					className="text-muted-foreground transition-colors hover:text-foreground"
 				>
 					Материалы
 				</Link>
+				<div className="flex items-center gap-4">
+					<ModeToggle />
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							{store.isAuth ? (
+								<Avatar className="cursor-pointer">
+									<AvatarImage
+										src="http://localhost:5000/124599.jpg"
+										alt="avatar"
+									/>
+									<AvatarFallback>
+										{store.user?.login.slice(0, 2)}
+									</AvatarFallback>
+								</Avatar>
+							) : (
+								<Button
+									variant="outline"
+									size="icon"
+									className="overflow-hidden rounded-full"
+								>
+									<img
+										src="/placeholder-user.jpg"
+										width={36}
+										height={36}
+										alt="Avatar"
+										className="overflow-hidden rounded-full"
+									/>
+								</Button>
+							)}
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end" sideOffset={10}>
+							{store.isAuth ? (
+								<>
+									<DropdownMenuLabel>{store.user?.login}</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onClick={() => navigate(`/profile/${store.user?.id}`)}
+									>
+										Профиль
+									</DropdownMenuItem>
+								</>
+							) : (
+								<DropdownMenuLabel>Посетитель</DropdownMenuLabel>
+							)}
+							<DropdownMenuItem>Поддержка</DropdownMenuItem>
 
-        {store.isAuth && <div>{store?.user?.login}</div>}
+							<DropdownMenuSeparator />
+							{store.isAuth ? (
+								<DropdownMenuItem
+									onClick={async () => {
+										try {
+											const response = await fetch(
+												'http://localhost:5000/user/logout',
+												{
+													method: 'POST',
+													headers: {
+														'Content-Type': 'application/json',
+													},
+													credentials: 'include',
+													body: JSON.stringify({ hi: 1 }),
+												}
+											);
 
-				<ModeToggle />
+											const result = await response.json();
+
+											store.isAuth = false;
+											store.user = null;
+											console.log(result);
+										} catch (error) {
+											console.error('Ошибка при отправке POST-запроса:', error);
+										}
+									}}
+								>
+									Выйти
+								</DropdownMenuItem>
+							) : (
+								<>
+									<DropdownMenuItem
+										onClick={() => {
+											navigate(LOGIN_ROUTE);
+										}}
+									>
+										Вход
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => {
+											navigate(REGISTRATION_ROUTE);
+										}}
+									>
+										Регистрация
+									</DropdownMenuItem>
+								</>
+							)}
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
 			</nav>
 			<Sheet>
 				<SheetTrigger asChild>
@@ -86,6 +196,83 @@ const Header = () => {
 							<Crown className="w-8 h-8 mr-1" />
 							<span>Шахматы</span>
 						</Link>
+						{store.isAuth ? (
+							<>
+								<div
+									className="flex items-center gap-3"
+									onClick={() => {
+										navigate(`/profile/${store.user?.id}`);
+									}}
+								>
+									<Avatar className="cursor-pointer">
+										<AvatarImage
+											src="http://localhost:5000/124599.jpg"
+											alt="avatar"
+										/>
+										<AvatarFallback>
+											{store.user?.login.slice(0, 2)}
+										</AvatarFallback>
+									</Avatar>
+									{store.user?.login}
+								</div>
+								<div className="flex gap-4">
+									<Link
+										to={`/profile/${store.user?.id}`}
+										className="inline-block text-base underline"
+									>
+										Профиль
+									</Link>
+									<span
+                    className='text-base underline'
+										onClick={async () => {
+											try {
+												const response = await fetch(
+													'http://localhost:5000/user/logout',
+													{
+														method: 'POST',
+														headers: {
+															'Content-Type': 'application/json',
+														},
+														credentials: 'include',
+														body: JSON.stringify({ hi: 1 }),
+													}
+												);
+
+												const result = await response.json();
+
+												store.isAuth = false;
+												store.user = null;
+												
+											} catch (error) {
+												console.error(
+													'Ошибка при отправке POST-запроса:',
+													error
+												);
+											}
+										}}
+									>
+										Выйти
+									</span>
+								</div>
+							</>
+						) : (
+							<>
+								Посетитель
+								<div className="flex gap-5">
+									<Link
+										to={LOGIN_ROUTE}
+										className="inline-block text-base underline"
+									>
+										Войти
+									</Link>
+									<Link to={REGISTRATION_ROUTE} className="text-base underline">
+										Зарегистрироваться
+									</Link>
+								</div>
+								<Separator />
+							</>
+						)}
+
 						<Link
 							to={FINDGAME_ROUTE}
 							className="text-muted-foreground hover:text-foreground"

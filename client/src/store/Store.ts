@@ -1,6 +1,7 @@
 import { API_URL } from '@/http';
 import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 
 export type User = {
 	id: number;
@@ -12,9 +13,17 @@ export type User = {
 export default class Store {
 	_isAuth: boolean = false;
 	_user: User | null = null;
+  _browserId: string | null = null;
 
 	constructor() {
 		makeAutoObservable(this);
+    
+    let curBrowserId = localStorage.getItem('browserId');
+    if (!curBrowserId) {
+      curBrowserId = uuidv4();
+      localStorage.setItem('browserId', curBrowserId!)
+    }
+    this.browserId = curBrowserId;
 	}
 
 	get isAuth(): boolean {
@@ -33,13 +42,20 @@ export default class Store {
 		this._user = user;
 	}
 
+  set browserId(id) {
+    this._browserId = id;
+  }
+
+  get browserId() {
+    return this._browserId;
+  }
+
 	async checkAuth() {
 		try {
 			const response = await axios.get(`${API_URL}/user/refresh`, {
 				withCredentials: true,
 			});
 
-      console.log({RESOPNSE: response})
 			const { user, accessToken } = response.data;
 			localStorage.setItem('token', accessToken);
       this.user = user;
