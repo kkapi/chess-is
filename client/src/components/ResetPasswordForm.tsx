@@ -7,9 +7,9 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { LOGIN_ROUTE } from '@/lib/constants';
+import { HOME_ROUTE, LOGIN_ROUTE } from '@/lib/constants';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -23,17 +23,26 @@ import {
 } from './ui/form';
 import { AlertCircle } from 'lucide-react';
 import Balance from 'react-wrap-balancer';
-import { $api } from '@/http';
+import axios from 'axios';
 
 const formSchema = z.object({
-	email: z
+	password: z
 		.string({
-			required_error: 'Введите почту.',
+			required_error: 'Введите пароль.',
 		})
 		.min(1, {
-			message: 'Введите почту.',
+			message: 'Введите пароль.',
 		})
-		.email({ message: 'Некорректный email' }),
+		.min(5, {
+			message: 'Пароль должен состоять минимум из 5 символов.',
+		})
+		.max(25, { message: 'Максимум 25 символов' }),
+	passwordConfirm: z
+		.string({
+			required_error: 'Подтвердите пароль.',
+		})
+		.min(5, { message: 'Минимум 5 символов' })
+		.max(25, { message: 'Максимум 25 символов' }),
 });
 
 export default function ResetPasswordForm() {
@@ -41,6 +50,7 @@ export default function ResetPasswordForm() {
 		resolver: zodResolver(formSchema),
 	});
 	const [email, setEmail] = useState('');
+	const { link } = useParams();
 	const navigate = useNavigate();
 
 	const {
@@ -49,11 +59,24 @@ export default function ResetPasswordForm() {
 	} = form;
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		if (values.password !== values.passwordConfirm) {
+			setError('passwordConfirm', { message: 'Пароли не совпадают' });
+			return;
+		}
 		console.log(values);
 
 		try {
-			const response = await $api.post('/user/recoverpass', { email: values.email.toLowerCase() });
-			setEmail(response.data.email);
+			const response = await axios.post(
+				'http://localhost:5000/user/resetpass',
+				{
+					password: values.password,
+					recoveryLink: link,
+				}
+			);
+
+			setEmail('done');
+
+			console.log(response);
 		} catch (err) {
 			let errMes = 'Непредвиденная ошибка';
 			if (err?.response?.data?.name === 'ApiError') {
@@ -65,7 +88,24 @@ export default function ResetPasswordForm() {
 	}
 
 	if (email) {
-		return <div></div>;
+		return (
+			<Card className="mx-auto max-w-sm">
+				<CardHeader>
+					<CardTitle className="text-xl">Сброс пароля</CardTitle>
+					<CardDescription>
+						<div>Пароль был успешно изменен</div>
+						<div className='flex gap-4'>
+							<Button variant="secondary" onClick={() => navigate(HOME_ROUTE)} className="mt-4">
+								На главную
+							</Button>
+              <Button onClick={() => navigate(LOGIN_ROUTE)} className="mt-4">
+								Войти
+							</Button>
+						</div>
+					</CardDescription>
+				</CardHeader>
+			</Card>
+		);
 	}
 
 	return (
@@ -73,14 +113,10 @@ export default function ResetPasswordForm() {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<CardHeader>
-						<CardTitle className="text-xl">Восстановление пароля FFFFFF</CardTitle>
+						<CardTitle className="text-xl">Сброс пароля</CardTitle>
 						<CardDescription>
-							<span className="block">
-								Укажите почту, на которую зарегистрирован аккаунт
-							</span>
-							<span className="block mt-3">
-								После заполнения формы на указанную почту придет письмо с
-								инструкцией по восстановлению пароля.
+							<span className="block mt-2">
+								Заполните форму для сброса пароля
 							</span>
 						</CardDescription>
 					</CardHeader>
@@ -94,14 +130,31 @@ export default function ResetPasswordForm() {
 							)}
 							<FormField
 								control={form.control}
-								name="email"
+								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Почта</FormLabel>
+										<FormLabel>Новый пароль</FormLabel>
 										<FormControl>
 											<Input
-												required={false}
-												placeholder="Введите почту, указанную при регистрации"
+												type="password"
+												placeholder="Введите новый пароль"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="passwordConfirm"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Подтверждение пароля</FormLabel>
+										<FormControl>
+											<Input
+												type="password"
+												placeholder="Подтвердите пароль"
 												{...field}
 											/>
 										</FormControl>
@@ -110,12 +163,16 @@ export default function ResetPasswordForm() {
 								)}
 							/>
 
-							<Button disabled={isSubmitting} type="submit" className="w-full">
-								{isSubmitting ? 'Обработка...' : 'Отправить письмо'}
+							<Button
+								disabled={isSubmitting}
+								type="submit"
+								className="w-full mt-2"
+							>
+								{isSubmitting ? 'Обработка...' : 'Изменить пароль'}
 							</Button>
 						</div>
 						<div className="mt-4 text-center text-sm">
-							Уже есть аккаунт?{' '}
+							Вспомнили пароль?{' '}
 							<Link to={LOGIN_ROUTE} className="underline">
 								Войти
 							</Link>

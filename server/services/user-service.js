@@ -73,8 +73,7 @@ class UserService {
 		if (user.isActivated) {
 			throw ApiError.BadRequest('Пользователь уже активирован');
 		}
-		const recoveryLink = uuid.v4();
-		user.recoveryLink = recoveryLink;
+		
 		user.isActivated = true;
 		await user.save();
 
@@ -102,8 +101,12 @@ class UserService {
 			throw ApiError.BadRequest(`Пользователь ${user.login} заблокирован`);
 		}
 
-		const recoveryLink = `${process.env.CLIENT_URL}/newpass/${user.recoveryLink}`;
-		await mailService.sendRecoveryLink(user.email, recoveryLink);
+    const recoveryLink = uuid.v4();
+		user.recoveryLink = recoveryLink;
+    await user.save();
+
+		const sendRecoveryLink = `${process.env.CLIENT_URL}/newpass/${user.recoveryLink}`;
+		await mailService.sendRecoveryLink(user.email, sendRecoveryLink);
 
 		return { ok: true };
 	}
@@ -112,18 +115,19 @@ class UserService {
 		const user = await User.findOne({
 			where: {
 				recoveryLink,
+        isActivated: true,
 			},
 		});
 
 		if (!user) {
-			return next(ApiError.internal('Некорректная ссылка восстановления'));
+			throw ApiError.BadRequest('Некорректная ссылка восстановления');
 		}
 
 		const newRecoveryLink = uuid.v4();
 		const hashPassword = await bcrypt.hash(password, 3);
 
 		user.password = hashPassword;
-		user.recoverнLink = newRecoveryLink;
+		user.recoveryLink = newRecoveryLink;
 
 		await user.save();
 

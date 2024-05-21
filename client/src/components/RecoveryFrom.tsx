@@ -7,7 +7,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { LOGIN_ROUTE } from '@/lib/constants';
+import { HOME_ROUTE, LOGIN_ROUTE } from '@/lib/constants';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -52,7 +52,10 @@ export function RecoveryForm() {
 		console.log(values);
 
 		try {
-			const response = await $api.post('/user/recoverpass', { email: values.email.toLowerCase() });
+			const response = await $api.post('/user/recoverpass', {
+				email: values.email.toLowerCase(),
+			});
+			console.log(response.data.email);
 			setEmail(response.data.email);
 		} catch (err) {
 			let errMes = 'Непредвиденная ошибка';
@@ -65,7 +68,23 @@ export function RecoveryForm() {
 	}
 
 	if (email) {
-		return <div></div>;
+		return (
+			<Card className="mx-auto max-w-sm">
+				<CardHeader>
+					<CardTitle className="text-xl">Восстановление пароля</CardTitle>
+					<CardDescription className="mt-2 text-base">
+						<div>
+							На почту{' '}
+							<span className="text-bold italic font-medium">{email}</span> было
+							направлено письмо с инструкцией для воостановления пароля.
+						</div>
+						<Button onClick={() => navigate(HOME_ROUTE)} className="mt-4">
+							На главную
+						</Button>
+					</CardDescription>
+				</CardHeader>
+			</Card>
+		);
 	}
 
 	return (
