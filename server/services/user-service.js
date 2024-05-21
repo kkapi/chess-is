@@ -106,7 +106,7 @@ class UserService {
     await user.save();
 
 		const sendRecoveryLink = `${process.env.CLIENT_URL}/newpass/${user.recoveryLink}`;
-		await mailService.sendRecoveryLink(user.email, sendRecoveryLink);
+		await mailService.sendRecoveryLink(user.email, sendRecoveryLink, user.login);
 
 		return { ok: true };
 	}
