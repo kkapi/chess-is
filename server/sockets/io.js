@@ -23,6 +23,8 @@ module.exports = io => {
 				},
 				black: null,
 				started: false,
+				ended: false,
+				resultMessage: '',
 				pgn: '',
 				time: 50000,
 				whiteConnected: false,
@@ -30,10 +32,12 @@ module.exports = io => {
 				countConnectedWhite: 0,
 				countConnectedBlack: 0,
 				messages: [],
-				private: false,
+				private: true,
 			};
 
 			rooms.set(roomId, newRoom);
+
+			await socket.join(roomId);
 
 			const response = {
 				err: false,
@@ -47,7 +51,7 @@ module.exports = io => {
 		});
 
 		socket.on('join_room', async (data, callBack) => {
-			const { userId, roomId, login } = data;
+			const { userId, roomId, login, role } = data;
 			console.log(data);
 			if (!socket.chessInfo) {
 				socket.chessInfo = {};
@@ -60,7 +64,25 @@ module.exports = io => {
 			if (!room) {
 				const response = {
 					err: true,
-					errMessage: 'Комнаты не сущесвует',
+					errMessage: 'Активной комнаты с таким адресом не сущесвует!',
+				};
+
+				callBack(response);
+				return;
+			}
+
+			if (
+				room?.private &&
+				role !== 'ADMIN' &&
+				room.white &&
+				room.black &&
+				userId !== room?.white?.userId &&
+				userId !== room?.black?.userId
+			) {
+				const response = {
+					err: true,
+					errMessage:
+						'Это приватная комната, к сожалению, вы не можете присоединиться к просмотру!',
 				};
 
 				callBack(response);
@@ -75,6 +97,8 @@ module.exports = io => {
 					userId,
 					login,
 				};
+
+				socket.to(roomId).emit('opponent', { roomId });
 			}
 
 			if (!room.black && userId !== room.white?.userId) {
@@ -82,6 +106,7 @@ module.exports = io => {
 					userId,
 					login,
 				};
+				socket.to(roomId).emit('opponent', { roomId });
 			}
 
 			let playerType = 'o';
@@ -96,10 +121,6 @@ module.exports = io => {
 				room.blackConnected = true;
 				room.countConnectedBlack += 1;
 				playerType = 'b';
-			}
-
-			if (room.white && room.black && !room.started) {
-				room.started = true;
 			}
 
 			const response = {
@@ -117,9 +138,16 @@ module.exports = io => {
 		});
 
 		socket.on('move', data => {
-			const { move, roomId, pgn } = data;
+			const { move, roomId, pgn, ended, resultMessage } = data;
 			const room = rooms.get(roomId);
+
+			if (room.white && room.black && !room.started) {
+				room.started = true;
+			}
+
 			room.pgn = pgn;
+			room.ended = ended;
+			room.resultMessage = resultMessage;
 
 			socket.to(roomId).emit('move', { move, room });
 		});
@@ -133,7 +161,65 @@ module.exports = io => {
 			socket.to(roomId).emit('message', newMes);
 		});
 
-		socket.on('disconnecting', reason => {
+		socket.on('leaveRoom', async data => {
+			console.log('LEAVE ROOM');
+			const { roomId, userId } = data;
+			const room = rooms.get(roomId);
+			if (!room) return;
+
+			if (userId === room?.white?.userId) {
+				room.countConnectedWhite -= 1;
+				if (room.countConnectedWhite === 0) {
+					room.whiteConnected = false;
+				}
+			}
+
+			if (userId === room?.black?.userId) {
+				room.countConnectedBlack -= 1;
+				if (room.countConnectedBlack === 0) {
+					room.blackConnected = false;
+				}
+			}
+
+			socket.to(roomId).emit('updateRommInfo', room);
+
+			if (
+				room.ended &&
+				room.countConnectedWhite <= 0 &&
+				room.countConnectedBlack <= 0
+			) {
+				const clientSockets = await io.in(roomId).fetchSockets();
+
+				clientSockets.forEach(s => {
+					s.leave(roomId);
+				});
+
+				rooms.delete(roomId);
+			}
+		});
+
+		socket.on('resign', data => {
+			const { roomId, userId } = data;
+			const room = rooms.get(roomId);
+
+			if (
+				!room ||
+				(userId !== room?.white?.userId && userId !== room?.black?.userId)
+			) {
+				return;
+			}
+
+			room.ended = true;
+			if (userId === room?.white?.userId) {
+				room.resultMessage = 'Белые сдались, победа черных!';
+			} else {
+				room.resultMessage = 'Черные сдались, победа белых!';
+			}
+
+			socket.to(roomId).emit('updateRommInfo', room);
+		});
+
+		socket.on('disconnecting', async reason => {
 			if (socket.chessInfo?.rooms) {
 				for (let roomId of socket.chessInfo.rooms) {
 					const room = rooms.get(roomId);
@@ -154,6 +240,20 @@ module.exports = io => {
 					}
 
 					socket.to(roomId).emit('updateRommInfo', room);
+
+					if (
+						room.ended &&
+						room.countConnectedWhite <= 0 &&
+						room.countConnectedBlack <= 0
+					) {
+						const clientSockets = await io.in(roomId).fetchSockets();
+
+						clientSockets.forEach(s => {
+							s.leave(roomId);
+						});
+
+						rooms.delete(roomId);
+					}
 				}
 			}
 		});

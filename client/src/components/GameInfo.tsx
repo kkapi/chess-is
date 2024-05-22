@@ -30,8 +30,17 @@ import {
 } from './ui/dialog';
 import ComplainForm from './ComplainForm';
 import { Context } from '@/main';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import socket from '@/socket/socket';
 
-const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
+const GameInfo = ({
+	roomInfo,
+	orientation,
+	setOrientation,
+	playerType,
+	resultMessage,
+  setRoomInfo
+}) => {
 	const { store } = useContext(Context);
 	const [copy, setCopy] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -52,7 +61,7 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 						<p className="text-xl font-medium"> {roomInfo?.white?.login}</p>
 					</div>
 				) : (
-					<p>Ожидание присоединения белых...</p>
+					<p className="text-xl font-medium text-center">Ожидание присоединения белых...</p>
 				)}
 			</div>
 		);
@@ -74,7 +83,7 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 						<p className="text-xl font-medium"> {roomInfo?.black?.login}</p>
 					</div>
 				) : (
-					<p>Ожидание присоединения черных...</p>
+					<p className="text-xl font-medium text-center">Ожидание присоединения черных...</p>
 				)}
 			</div>
 		);
@@ -83,7 +92,21 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 	return (
 		<Card className="w-[350px] md:w-[400px] border h-[500px]">
 			<CardContent className="h-full flex flex-col gap-6 justify-center items-center">
-				<div className="font-bold text-2xl mt-4">Игра</div>
+				<div className="font-bold text-2xl mt-4">
+					{roomInfo?.resultMessage ? (
+						<span>{roomInfo?.resultMessage}</span>
+					) : (
+						<span>Игра</span>
+					)}
+					{/* <Dialog>
+						<DialogTrigger asChild>
+							<Button variant="outline">Информация</Button>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							{JSON.stringify(roomInfo, null, '  ')}
+						</DialogContent>
+					</Dialog> */}
+				</div>
 				{orientation === 'black' ? <WhiteInfo /> : <BlackInfo />}
 				<Separator />
 				<div className="h-[200px] flex flex-col gap-5">
@@ -157,7 +180,7 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 													variant="outline"
 													size="icon"
 													className="p-1"
-													disabled={!store.user}
+													disabled={!store.user || !roomInfo?.started}
 												>
 													<MessageSquareWarning className="h-5 w-5" />
 												</Button>
@@ -184,7 +207,14 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 										</Dialog>
 									</TooltipTrigger>
 									<TooltipContent side="left">
-										{store.user ? <p>Пожаловаться</p> : <p>Отправлять жалобы могут только зарегистрированные пользователи</p>}
+										{store.user && roomInfo?.started ? (
+											<p>Пожаловаться</p>
+										) : (
+											<p>
+												Отправлять жалобы могут только зарегистрированные
+												пользователи после начала игры
+											</p>
+										)}
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
@@ -202,18 +232,45 @@ const GameInfo = ({ roomInfo, orientation, setOrientation, playerType }) => {
 							<Button
 								variant="outline"
 								className="flex gap-2 justify-center items-center w-full md:w-auto border-2 border-foreground-muted"
-								disabled={!roomInfo?.pgn}
+								disabled={!roomInfo?.pgn || roomInfo?.ended}
 							>
 								<Handshake /> Предложить ничью
 							</Button>
-							<Button
-								variant="outline"
-								className="flex gap-2 justify-center items-center w-full md:w-auto border-2 border-foreground-muted"
-								disabled={!roomInfo?.pgn}
-							>
-								<Flag />
-								Сдаться
-							</Button>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+                  variant="outline"
+                  className="flex gap-2 justify-center items-center w-full md:w-auto border-2 border-foreground-muted"
+                  disabled={!roomInfo?.pgn || roomInfo?.ended}
+                >
+                  <Flag />
+                  Сдаться
+                </Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent className='w-[400px] flex flex-col justify-center items-center'>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											Вы уверены, что хотите сдаться?
+										</AlertDialogTitle>
+										
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Отмена</AlertDialogCancel>
+										<AlertDialogAction onClick={() => {
+                      if (roomInfo?.end) return;
+                      socket.emit('resign', {roomId: roomInfo?.id, userId: store?.user?.id || store?.browserId});
+                      setRoomInfo(prev => {
+                        return {
+                          ...prev,
+                          ended: true,
+                          resultMessage: playerType === 'w' ? 'Белые сдались, победа черных!' : 'Черные сдались, победа белых!'
+                        }
+                      })
+                    }}>Сдаться</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+							
 						</div>
 					) : (
 						<div className="flex justify-center items-center gap-3 text-lg font-medium">

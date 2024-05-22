@@ -6,14 +6,21 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { CLIENT_URL } from '@/lib/constants';
 import { Context } from '@/main';
 import socket from '@/socket/socket';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateRoomPage = () => {
 	const { store } = useContext(Context);
-  const navigate = useNavigate();
-  const [link, setLink] = useState('');
-  const [isWating, setIsWating] = useState(false);
+	const navigate = useNavigate();
+	const [link, setLink] = useState('');
+	const [isWating, setIsWating] = useState(false);
+
+	useEffect(() => {
+		socket.on('opponent', data => {
+			const { roomId } = data;
+      navigate(`/play/${roomId}`)
+		});
+	}, []);
 
 	return (
 		<div className="min-h-screen min-w-screen flex flex-col justify-between">
@@ -61,19 +68,22 @@ const CreateRoomPage = () => {
 						onClick={() => {
 							socket.emit(
 								'create_room',
-								{ userId: store.user?.id || store?.browserId, login: store.user?.login || 'Аноним' },
-								response => {									
-                  if (response?.err) return;
-                  setIsWating(true);
-                  setLink(`/playing_room/${response.data.room.id}`)
+								{
+									userId: store.user?.id || store?.browserId,
+									login: store.user?.login || 'Аноним',
+								},
+								response => {
+									if (response?.err) return;
+									setIsWating(true);
+									setLink(`/play/${response.data.room.id}`);
 								}
 							);
 						}}
 					>
 						СОЗДАТЬ КОМНАТУ
 					</Button>
-          {link && <div>{`${CLIENT_URL}${link}`}</div>}
-          {isWating && <div>Ожидание соперника...</div>}
+					{link && <div>{`${CLIENT_URL}${link}`}</div>}
+					{isWating && <div>Ожидание соперника...</div>}
 				</div>
 			</DefaultLayout>
 		</div>

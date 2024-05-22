@@ -3,6 +3,7 @@ import AnalysisPage from "./pages/AnalysisPage"
 import ComputerGamePage from "./pages/ComputerGamePage"
 import CreateNewsPage from "./pages/CreateNewsPage"
 import CreateRoomPage from "./pages/CreateRoomPage"
+import ErrorPage from "./pages/ErrorPage"
 import FindGamePage from "./pages/FindGamePage"
 import HomePage from "./pages/HomePage"
 import LoginPage from "./pages/LoginPage"
@@ -19,6 +20,7 @@ export const routes = [
   {
 		path: HOME_ROUTE,
 		element: <HomePage />,
+    errorElement: <ErrorPage />
 	},
 	{
     path: LOGIN_ROUTE,

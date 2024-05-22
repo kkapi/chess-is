@@ -14,7 +14,7 @@ export const ONE_NEWS_ROUTE = '/news/:id'
 export const MATERIALS_ROUTE = '/materials ';
 export const PROFILE_ROUTE = '/profile/:id';
 
-export const PLAYING_ROOM_ROUTE = '/playing_room/:roomId';
+export const PLAYING_ROOM_ROUTE = '/play/:roomId';
 
 export const CREATENEWS_ROUTE = '/createnews';
 
