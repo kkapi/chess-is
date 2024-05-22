@@ -15,10 +15,6 @@ module.exports = io => {
 			const { userId, login } = data;
 			const roomId = uuidv4();
 
-			console.log('#########################');
-			console.log(userId, typeof userId);
-			console.log('#########################');
-
 			const newRoom = {
 				id: roomId,
 				white: {
@@ -91,20 +87,20 @@ module.exports = io => {
 			let playerType = 'o';
 
 			if (userId === room.white?.userId) {
-        room.whiteConnected = true;
-        room.countConnectedWhite += 1;
+				room.whiteConnected = true;
+				room.countConnectedWhite += 1;
 				playerType = 'w';
 			}
 
 			if (userId === room.black?.userId) {
-        room.blackConnected = true;
-        room.countConnectedBlack += 1;
+				room.blackConnected = true;
+				room.countConnectedBlack += 1;
 				playerType = 'b';
 			}
 
-      if (room.white && room.black && !room.started) {
-        room.started = true;
-      }
+			if (room.white && room.black && !room.started) {
+				room.started = true;
+			}
 
 			const response = {
 				err: false,
@@ -115,9 +111,9 @@ module.exports = io => {
 				},
 			};
 
-      socket.to(roomId).emit('updateRommInfo', room);
+			socket.to(roomId).emit('updateRommInfo', room);
 
-			callBack(response);      
+			callBack(response);
 		});
 
 		socket.on('move', data => {
@@ -125,7 +121,7 @@ module.exports = io => {
 			const room = rooms.get(roomId);
 			room.pgn = pgn;
 
-			socket.to(roomId).emit('move', move);
+			socket.to(roomId).emit('move', { move, room });
 		});
 
 		socket.on('message', data => {
@@ -137,29 +133,29 @@ module.exports = io => {
 			socket.to(roomId).emit('message', newMes);
 		});
 
-    socket.on('disconnecting', reason => {
-      if (socket.chessInfo?.rooms) {
-        for (let roomId of socket.chessInfo.rooms) {
-          const room = rooms.get(roomId);
-          if (!room) continue;
+		socket.on('disconnecting', reason => {
+			if (socket.chessInfo?.rooms) {
+				for (let roomId of socket.chessInfo.rooms) {
+					const room = rooms.get(roomId);
+					if (!room) continue;
 
-          if (socket?.chessInfo?.id === room?.white?.userId) {
-            room.countConnectedWhite -= 1;
-            if (room.countConnectedWhite === 0) {
-              room.whiteConnected = false;
-            }
-          }
+					if (socket?.chessInfo?.id === room?.white?.userId) {
+						room.countConnectedWhite -= 1;
+						if (room.countConnectedWhite === 0) {
+							room.whiteConnected = false;
+						}
+					}
 
-          if (socket?.chessInfo?.id === room?.black?.userId) {
-            room.countConnectedBlack -= 1;
-            if (room.countConnectedBlack === 0) {
-              room.blackConnected = false;
-            }
-          }
+					if (socket?.chessInfo?.id === room?.black?.userId) {
+						room.countConnectedBlack -= 1;
+						if (room.countConnectedBlack === 0) {
+							room.blackConnected = false;
+						}
+					}
 
-          socket.to(roomId).emit('updateRommInfo', room);
-        }
-      }
-    })
+					socket.to(roomId).emit('updateRommInfo', room);
+				}
+			}
+		});
 	});
 };

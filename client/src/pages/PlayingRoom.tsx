@@ -21,18 +21,18 @@ const PlayingRoom = () => {
 	const [orientation, setOrientation] = useState('white');
 	const [messages, setMessages] = useState([]);
 
-  const [boardSize, setBoardSize] = useState(500);
-  const { height, width } = useWindowDimensions();
+	const [boardSize, setBoardSize] = useState(500);
+	const { height, width } = useWindowDimensions();
 
-  const [roomInfo, setRoomInfo] = useState({});
+	const [roomInfo, setRoomInfo] = useState({});
 
-  useEffect(() => {
-    if (width < 500) {
-      setBoardSize(350);
-    } else {
-      setBoardSize(500);
-    }
-  }, [width])
+	useEffect(() => {
+		if (width < 500) {
+			setBoardSize(350);
+		} else {
+			setBoardSize(500);
+		}
+	}, [width]);
 
 	useEffect(() => {
 		if (roomId) {
@@ -50,7 +50,7 @@ const PlayingRoom = () => {
 					chess.loadPgn(response?.data?.room?.pgn);
 					setFen(chess.fen());
 					setPlayerType(response?.data?.playerType);
-          setRoomInfo(response?.data?.room);
+					setRoomInfo(response?.data?.room);
 					setMessages(response?.data?.room?.messages);
 					if (response?.data?.playerType === 'b') {
 						setOrientation('black');
@@ -96,27 +96,44 @@ const PlayingRoom = () => {
 			pgn: chess.pgn(),
 		});
 
+		setRoomInfo(prev => {
+			return {
+				...prev,
+				pgn: chess.pgn(),
+			};
+		});
+
 		return true;
 	}
 
 	useEffect(() => {
-		socket.on('move', move => {
+		socket.on('move', data => {
+			const { move, room } = data;
 			makeAMove(move);
+			setRoomInfo(room);
 		});
 	}, [makeAMove]);
 
-  useEffect(() => {
-    socket.on('updateRommInfo', (room) => {
-      setRoomInfo(room);
-    })
-  }, [])
+	useEffect(() => {
+		socket.on('updateRommInfo', room => {
+			setRoomInfo(room);
+		});
+	}, []);
 
 	return (
 		<DefaultLayout>
 			<div className="container relative">
 				<div className="min-h-[100vh] md:min-h-[79vh] flex flex-col md:flex-row gap-8 justify-start md:justify-center items-center">
-          <GameInfo roomInfo={roomInfo} orientation={orientation}/>
-					<div className={`w-[${boardSize}px] h-[${boardSize}px md:mt-0`}>
+					<div className="hidden md:block">
+						<GameInfo
+							roomInfo={roomInfo}
+							orientation={orientation}
+							setOrientation={setOrientation}
+              playerType={playerType}
+						/>
+					</div>
+
+					<div className={`w-[${boardSize}px] h-[${boardSize}px mt-9 md:mt-0`}>
 						<Chessboard
 							arePiecesDraggable={playerType === 'w' || playerType === 'b'}
 							promotionDialogVariant="vertical"
@@ -125,6 +142,14 @@ const PlayingRoom = () => {
 							position={fen}
 							onPieceDrop={onDrop}
 							boardOrientation={orientation}
+						/>
+					</div>
+					<div className="block md:hidden">
+						<GameInfo
+							roomInfo={roomInfo}
+							orientation={orientation}
+							playerType={playerType}
+							setOrientation={setOrientation}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (
