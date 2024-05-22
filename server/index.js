@@ -1,7 +1,14 @@
 require('dotenv').config();
 
+const http = require('http');
 const express = require('express');
 
+const { Server } = require('socket.io');
+const socketIo = require('./sockets/io')
+
+const app = express();
+
+// REST
 const sequelize = require('./db');
 const models = require('./models/models');
 
@@ -15,8 +22,6 @@ const errorMiddleware = require('./middlewares/error-middleware');
 
 const PORT = process.env.PORT ?? 5000;
 
-const app = express();
-
 app.use(
 	cors({
 		origin: 'http://localhost:5173',
@@ -29,12 +34,24 @@ app.use(express.json());
 app.use(router);
 app.use(errorMiddleware);
 
+// socket
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+	cors: '*', // allow connection from any origin
+});
+
+socketIo(io);
+
+// start
+
 async function start() {
 	try {
 		await sequelize.authenticate();
 		await sequelize.sync();
 
-		app.listen(PORT, () => {
+		server.listen(PORT, () => {
 			console.log(`server started on port ${PORT}, http://localhost:${PORT}`);
 		});
 	} catch (error) {

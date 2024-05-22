@@ -14,7 +14,11 @@ export const ONE_NEWS_ROUTE = '/news/:id'
 export const MATERIALS_ROUTE = '/materials ';
 export const PROFILE_ROUTE = '/profile/:id';
 
+export const PLAYING_ROOM_ROUTE = '/playing_room/:roomId';
+
 export const CREATENEWS_ROUTE = '/createnews';
 
 export const USERS_ROUTE = '/users';
+
+export const CLIENT_URL = 'http://localhost:5173'
 

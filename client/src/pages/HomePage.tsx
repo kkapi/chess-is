@@ -17,8 +17,6 @@ import { ANALYSIS_ROUTE, COMPUTER_ROUTE, FINDGAME_ROUTE, LOGIN_ROUTE, MATERIALS_
 import { useContext } from 'react';
 import { Context } from '@/main';
 import { observer } from 'mobx-react-lite';
-import { logout } from '@/http/userAPI';
-import axios from 'axios';
 
 const HomePage = () => {
 	const navigate = useNavigate();

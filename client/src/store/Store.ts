@@ -49,19 +49,4 @@ export default class Store {
   get browserId() {
     return this._browserId;
   }
-
-	async checkAuth() {
-		try {
-			const response = await axios.get(`${API_URL}/user/refresh`, {
-				withCredentials: true,
-			});
-
-			const { user, accessToken } = response.data;
-			localStorage.setItem('token', accessToken);
-      this.user = user;
-      this.isAuth = true;
-		} catch (e) {
-			console.log(e);
-		}
-	}
 }

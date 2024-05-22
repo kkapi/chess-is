@@ -60,7 +60,7 @@ export function LoginForm() {
 	} = form;
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-    await new Promise(res => setTimeout(res, 500))
+    await new Promise(res => setTimeout(res, 200))
 		try {
 			const data = await login(values.login, values.password);
 			store.isAuth = true;
@@ -78,7 +78,7 @@ export function LoginForm() {
 	}
 
 	return (
-		<Card className="mx-auto max-w-sm">
+		<Card className="mx-auto max-w-sm w-[360px]">
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<CardHeader>

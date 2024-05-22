@@ -12,7 +12,6 @@ import {
 	MATERIALS_ROUTE,
 	NEWROOM_ROUTE,
 	NEWS_ROUTE,
-	PROFILE_ROUTE,
 	REGISTRATION_ROUTE,
 } from '@/lib/constants';
 import { useContext } from 'react';
@@ -25,16 +24,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { useTheme } from './ThemeProvider';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Badge } from './ui/badge';
-import { getRole } from '@/lib/utils';
 import { Separator } from './ui/separator';
+import { observer } from 'mobx-react-lite';
+import socket from '@/socket/socket';
 
 const Header = () => {
 	const { store } = useContext(Context);
 	const navigate = useNavigate();
-	const { setTheme } = useTheme();
 
 	return (
 		<header className="sticky top-0 z-50 w-full flex justify-between h-16 md:h-20 items-center md:justify-center gap-4 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
@@ -46,6 +43,11 @@ const Header = () => {
 					<Crown className="w-8 h-8 mr-1" />
 					<span>Шахматы</span>
 				</Link>
+        {/* <Button onClick={() => {
+          socket.emit('print_rooms')
+        }}>
+          PRINT ROOMS
+        </Button> */}
 				<Link
 					to={FINDGAME_ROUTE}
 					className="text-muted-foreground transition-colors hover:text-foreground"
@@ -328,4 +330,4 @@ const Header = () => {
 	);
 };
 
-export default Header;
+export default observer(Header);
