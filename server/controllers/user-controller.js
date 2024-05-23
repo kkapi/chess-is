@@ -1,6 +1,4 @@
 const userService = require('../services/user-service');
-const { validationResult } = require('express-validator');
-const ApiError = require('../exceptions/api-error');
 
 class UserController {
 	async registration(req, res, next) {
@@ -24,17 +22,14 @@ class UserController {
 	}
 
 	async login(req, res, next) {
-		/* AAAAAAAAAAAAAAAAAAAAAAAAAAA ТУТ НЕ ЗАБЫВТЬ ПОМЕНЯТЬ ОБРАТНО НА ТОЕК */
 		try {
 			const { email, password, login } = req.body;
 
 			const userData = await userService.login(email, password, login);
 
-			console.log({ USERDATA: userData });
-
 			res
 				.cookie('refreshToken', userData.refreshToken, {
-					/* ТУТ ДЕБАЖУ token */ maxAge: 30 * 24 * 60 * 1000,
+					maxAge: 30 * 24 * 60 * 1000,
 					httpOnly: true,
 				})
 				.json(userData);
@@ -49,7 +44,6 @@ class UserController {
 			console.log({ refreshToken });
 			const token = await userService.logout(refreshToken);
 			res.clearCookie('refreshToken');
-			res.clearCookie('user');
 			res.status(200).json('Очистили');
 		} catch (error) {
 			next(error);

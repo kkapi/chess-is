@@ -108,6 +108,25 @@ const GameInfo = ({
 		);
 	};
 
+	function getButtonState() {
+		if (!roomInfo?.started)
+			return {
+				disabled: true,
+				mes: 'Отправлять жалобы можно после начала игры',
+			};
+		if (!store.isAuth)
+			return {
+				disabled: true,
+				mes: 'Отправлять жалобы могут только авторизированные пользователи',
+			};
+		if (isNaN(roomInfo?.white.userId) || isNaN(roomInfo?.black?.userId))
+			return {
+				disabled: true,
+				mes: 'Жаловаться можно только на зарегистрированных пользователей',
+			};
+		return { disabled: false, mes: 'Пожаловаться' };
+	}
+
 	return (
 		<Card className="w-[350px] md:w-[370px] border h-[550px] md:h-[500px]">
 			<CardContent className="h-full flex flex-col gap-6 justify-center items-center">
@@ -128,8 +147,7 @@ const GameInfo = ({
 				</div>
 				{orientation === 'black' ? <WhiteInfo /> : <BlackInfo />}
 				<Separator />
-				<div className="h-[200px] flex flex-col gap-5">
-					{/* <p>Игра начата: {roomInfo?.started ? 'Да' : 'Нет'}</p> */}
+				<div className="h-[200px] flex flex-col gap-5">					
 					<div className="flex gap-1">
 						<ScrollArea
 							type="auto"
@@ -176,6 +194,7 @@ const GameInfo = ({
 											onClick={() => {
 												navigator.clipboard.writeText(roomInfo?.pgn);
 												setCopy(true);
+                        setTimeout(() => {setCopy(false)}, 3000) 
 											}}
 										>
 											{!copy ? (
@@ -193,13 +212,13 @@ const GameInfo = ({
 							<TooltipProvider delayDuration={200}>
 								<Tooltip>
 									<TooltipTrigger>
-										<Dialog open={store.user && open} onOpenChange={setOpen}>
+										<Dialog open={!getButtonState().disabled && open} onOpenChange={setOpen}>
 											<DialogTrigger>
 												<Button
 													variant="outline"
 													size="icon"
 													className="p-1"
-													disabled={!store.user || !roomInfo?.started}
+													disabled={getButtonState().disabled}
 												>
 													<MessageSquareWarning className="h-5 w-5" />
 												</Button>
@@ -226,14 +245,7 @@ const GameInfo = ({
 										</Dialog>
 									</TooltipTrigger>
 									<TooltipContent side="left">
-										{store.user && roomInfo?.started ? (
-											<p>Пожаловаться</p>
-										) : (
-											<p>
-												Отправлять жалобы могут только зарегистрированные
-												пользователи после начала игры
-											</p>
-										)}
+										<p>{getButtonState().mes}</p>
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
@@ -250,7 +262,9 @@ const GameInfo = ({
 						<>
 							{drawOffer ? (
 								<div className="text-bold text-2xl w-[300px] flex items-center gap-3">
-                  <span className='font-medium text-base'>Вам предложили ничью</span>
+									<span className="font-medium text-base">
+										Вам предложили ничью
+									</span>
 									<Button
 										variant="outline"
 										className="border-2 border-foreground-muted"
@@ -267,7 +281,7 @@ const GameInfo = ({
 										<Check className="h-4 w-4" />
 									</Button>
 									<Button
-                    variant="outline"
+										variant="outline"
 										className="border-2 border-foreground-muted"
 										size="sm"
 										onClick={() => {

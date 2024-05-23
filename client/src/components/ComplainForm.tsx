@@ -21,6 +21,7 @@ import {
 import { Textarea } from './ui/textarea';
 import { useContext } from 'react';
 import { Context } from '@/main';
+import { $authApi } from '@/http';
 
 const FormSchema = z.object({
 	reason: z.string({
@@ -48,6 +49,15 @@ const ComplainForm = ({ setOpen, roomInfo, playerType }) => {
       login: store.user.login,
       role: store.user.role,
     } });
+
+    const response = $authApi.post('/complaint/new', {
+      gameUuid: roomInfo?.id,
+      applicant: store?.user?.id,
+      defendant: roomInfo?.white?.userId === store?.user?.id ? roomInfo?.black?.userId : roomInfo?.white?.userId,
+      reason: data.reason,
+      description: data.description
+    });
+
 		setOpen(false);
 	}
 
