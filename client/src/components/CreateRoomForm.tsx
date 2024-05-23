@@ -74,13 +74,14 @@ const CreateRoomForm = () => {
 		<div className="flex justify-center">
 			<div className="my-6 md:my-0">
 				{isWating ? (
-					<div className="flex flex-col text-center items-center gap-2 md:gap-4">
+					<div className="flex flex-col text-center items-center gap-3 md:gap-4">
 						<div className="mt-6 md:mt-0 text-xl md:text-2xl font-bold flex justify-center items-center">
 							Ожидание присоединения оппонента
 							<Loader2 className="ml-4 h-8 w-8 animate-spin" />
 						</div>
-						<div className="md:text-lg">
-							С вами сыграет первый, кто перейдет по этой ссылке
+						<div className="md:text-lg flex gap-2 items-center">
+							С вами сыграет первый, кто перейдет по этой ссылке{' '}
+							
 						</div>
 						<div className="bg-secondary p-3 rounded-lg border-secondary border flex gap-2 w-fit items-center justify-center text-muted-foreground">
 							{`${CLIENT_URL}${link}`}{' '}
@@ -106,8 +107,17 @@ const CreateRoomForm = () => {
 							<div className="w-1/2 text-center flex justify-center items-center">
 								Ваш соперник также может отсканировать этот QR-код
 							</div>
-							<QRCodeSVG value={`${CLIENT_URL}${link}`} />
+							<span className="bg-white p-3 border rounded">
+								<QRCodeSVG value={`${CLIENT_URL}${link}`} />
+							</span>
 						</div>
+            <Button
+								onClick={() => socket.emit('cancelRoom', { roomId: link })}
+                size="lg"
+                className='text-lg w-[200px]'
+							>
+								Отмена
+							</Button>
 					</div>
 				) : (
 					<Form {...form}>
@@ -115,7 +125,9 @@ const CreateRoomForm = () => {
 							onSubmit={form.handleSubmit(onSubmit)}
 							className="w-full space-y-6 p-8 flex flex-col justify-start items-center border-2 bordre-buted-background rounded-lg"
 						>
-              <div className='text-center text-xl font-bold'>Настройка комнаты</div>
+							<div className="text-center text-xl font-bold">
+								Настройка комнаты
+							</div>
 							<div className="flex flex-row items-center justify-center w-full gap-8">
 								<FormField
 									control={form.control}
@@ -217,7 +229,7 @@ const CreateRoomForm = () => {
 										control={form.control}
 										name="time"
 										render={({ field }) => (
-											<FormItem className='w-4/5'>
+											<FormItem className="w-4/5">
 												<FormLabel>Время</FormLabel>
 												<FormControl>
 													<Slider
@@ -237,7 +249,7 @@ const CreateRoomForm = () => {
 										control={form.control}
 										name="increment"
 										render={({ field }) => (
-											<FormItem className='w-4/5'>
+											<FormItem className="w-4/5">
 												<FormLabel>Добавление</FormLabel>
 												<FormControl>
 													<Slider

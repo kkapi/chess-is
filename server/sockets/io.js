@@ -102,6 +102,17 @@ module.exports = io => {
 			}
 		});
 
+		socket.on('cancelRoom', data => {
+			try {
+        let {roomId} = data;
+        roomId = roomId?.split('/')[2];
+        console.log(rooms.get(roomId));
+        rooms.delete(roomId);
+			} catch (e) {
+				console.log(e);
+			}
+		});
+
 		socket.on('join_room', async (data, callBack) => {
 			try {
 				const { userId, roomId, login, role } = data;
@@ -257,12 +268,12 @@ module.exports = io => {
 		socket.on('timeOver', async data => {
 			try {
 				const { roomId, userId, color } = data;
-        console.log("TIMEOVER", {roomId, color})
+				console.log('TIMEOVER', { roomId, color });
 				const room = rooms.get(roomId);
 
 				if (
 					!room ||
-          room.ended ||
+					room.ended ||
 					(userId !== room?.white?.userId && userId !== room?.black?.userId)
 				) {
 					return;
@@ -270,10 +281,10 @@ module.exports = io => {
 
 				room.ended = true;
 				if (color === 'w') {
-          room.whiteTime = 0;
+					room.whiteTime = 0;
 					room.resultMessage = 'Белые просрочили время, победа черных!';
 				} else {
-          room.blackTime = 0;
+					room.blackTime = 0;
 					room.resultMessage = 'Черные просрочили время, победа белых!';
 				}
 
@@ -361,8 +372,8 @@ module.exports = io => {
 				}
 
 				room.ended = true;
-        room.blackTime = blackTime;
-        room.whiteTime = whiteTime;
+				room.blackTime = blackTime;
+				room.whiteTime = whiteTime;
 				if (userId === room?.white?.userId) {
 					room.resultMessage = 'Белые сдались, победа черных!';
 				} else {
@@ -424,8 +435,8 @@ module.exports = io => {
 				}
 
 				room.ended = true;
-        room.whiteTime = whiteTime;
-        room.blackTime = blackTime;
+				room.whiteTime = whiteTime;
+				room.blackTime = blackTime;
 				room.resultMessage = 'Ничья! Соперники согласились на ничью.';
 
 				io.to(roomId).emit('updateRommInfo', room);
