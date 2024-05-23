@@ -50,8 +50,13 @@ const PlayingRoom = () => {
 		if (timer.current) {
 			clearInterval(timer.current);
 		}
-		const callback = chess.turn() === 'w' ? decrementWhiteTimer : decrementBlackTimer;
-    timer.current = setInterval(callback, 1000);
+		const callback =
+			chess.turn() === 'w' ? decrementWhiteTimer : decrementBlackTimer;
+		timer.current = setInterval(callback, 1000);
+	}
+
+	function stopTimer() {
+		clearTimeout(timer.current);
 	}
 
 	function decrementBlackTimer() {
@@ -118,9 +123,9 @@ const PlayingRoom = () => {
 					setWhiteTime(response?.data?.room?.whiteTime);
 					setBlackTime(response?.data?.room?.blackTime);
 
-          if (response?.data?.room?.started) {
-            startTimer();
-          }
+					if (response?.data?.room?.started && !response?.data?.room?.ended && response?.data?.room?.timeControl) {
+						startTimer();
+					}
 
 					if (response?.data?.playerType === 'b') {
 						setOrientation('black');
@@ -137,9 +142,13 @@ const PlayingRoom = () => {
 				setFen(chess.fen()); // update fen state to trigger a re-render
 
 				if (chess.isGameOver()) {
+					stopTimer();
 					setResultMessage(getResultMessage());
 				}
-        startTimer();
+				if (!chess.isGameOver()) {
+					startTimer();
+				}
+
 				return result;
 			} catch (e) {
 				return null;
@@ -167,12 +176,25 @@ const PlayingRoom = () => {
 		// illegal move
 		if (move === null) return false;
 
+    let wTime = whiteTime;
+    let bTime = blackTime;
+
+    if (chess.turn() === 'w') {
+      bTime += roomInfo?.increment;
+      setBlackTime(prev => prev + roomInfo?.increment);
+    } else {
+      wTime += roomInfo?.increment;
+      setWhiteTime(wTime);
+    }
+
 		socket.emit('move', {
 			move,
 			roomId,
 			pgn: chess.pgn(),
 			ended: chess.isGameOver(),
 			resultMessage: getResultMessage(),
+			whiteTime: wTime,
+			blackTime: bTime,
 		});
 
 		setRoomInfo(prev => {
@@ -196,8 +218,13 @@ const PlayingRoom = () => {
 	useEffect(() => {
 		socket.on('move', data => {
 			const { move, room } = data;
+			if (room.ended) {
+				stopTimer();
+			}
 			makeAMove(move);
 			setRoomInfo(room);
+			setWhiteTime(room?.whiteTime);
+			setBlackTime(room?.blackTime);
 		});
 	}, [makeAMove]);
 
@@ -205,6 +232,9 @@ const PlayingRoom = () => {
 		socket.on('updateRommInfo', room => {
 			setRoomInfo(room);
 			setSendDraw(false);
+			if (room?.ended) {
+				stopTimer();
+			}
 		});
 
 		socket.on('declineDraw', data => {
@@ -266,7 +296,8 @@ const PlayingRoom = () => {
 			<div className="container relative">
 				<div className="min-h-[100vh] md:min-h-[79vh] flex flex-col md:flex-row gap-8 justify-start md:justify-center items-center">
 					<div>
-						{whiteTime} {blackTime}
+						{whiteTime} {blackTime}{' '}
+						<button onClick={() => stopTimer()}>stop</button>
 					</div>
 					<div className="hidden md:block">
 						<GameInfo
@@ -280,6 +311,8 @@ const PlayingRoom = () => {
 							setSendDraw={setSendDraw}
 							drawOffer={drawOffer}
 							setDrawOffer={setDrawOffer}
+              whiteTime={whiteTime}
+              blackTime={blackTime}
 						/>
 					</div>
 
@@ -306,6 +339,8 @@ const PlayingRoom = () => {
 							setSendDraw={setSendDraw}
 							drawOffer={drawOffer}
 							setDrawOffer={setDrawOffer}
+              whiteTime={whiteTime}
+              blackTime={blackTime}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (

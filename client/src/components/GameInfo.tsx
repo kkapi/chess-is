@@ -55,10 +55,19 @@ const GameInfo = ({
 	setRoomInfo,
 	drawOffer,
 	setDrawOffer,
+  whiteTime,
+  blackTime,
 }) => {
 	const { store } = useContext(Context);
 	const [copy, setCopy] = useState(false);
 	const [open, setOpen] = useState(false);
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+  
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
 
 	const WhiteInfo = () => {
 		return (
@@ -72,8 +81,8 @@ const GameInfo = ({
 								<CircleOff className="w-6 h-6" color="red" />
 							)}
 						</div>
-						{/* <p>Идентификатор пользователя: {roomInfo?.white?.userId}</p> */}
-						<p className="text-xl font-medium"> {roomInfo?.white?.login}</p>
+						
+						<p className="text-xl font-medium"> {roomInfo?.white?.login} {roomInfo?.timeControl && <>{formatTime(whiteTime)}</>}</p>
 					</div>
 				) : (
 					<p className="text-xl font-medium text-center">
@@ -96,8 +105,8 @@ const GameInfo = ({
 								<CircleOff className="w-6 h-6" color="red" />
 							)}
 						</div>
-						{/* <p>Идентификатор пользователя: {roomInfo?.white?.userId}</p> */}
-						<p className="text-xl font-medium"> {roomInfo?.black?.login}</p>
+						
+						<p className="text-xl font-medium"> {roomInfo?.black?.login} {roomInfo?.timeControl && <>{formatTime(blackTime)}</>}</p>
 					</div>
 				) : (
 					<p className="text-xl font-medium text-center">

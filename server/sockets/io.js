@@ -39,17 +39,17 @@ module.exports = io => {
 					started: false,
 					ended: false,
 
-          turn: 'white',
+					turn: 'white',
 
 					resultMessage: '',
 
 					pgn: '',
 
 					timeControl: timeControl,
-					whiteTime: time,
-					blackTime: time,
+					whiteTime: time * 60,
+					blackTime: time * 60,
 					increment: increment,
-          updatedAt: Date.now(),
+					updatedAt: Date.now(),
 
 					whiteConnected: false,
 					blackConnected: false,
@@ -176,6 +176,19 @@ module.exports = io => {
 					playerType = 'b';
 				}
 
+				if (room.started && !room.ended) {
+					if (room.turn === 'white') {
+						room.whiteTime = Math.floor(
+							room.whiteTime - (Date.now() - room.updatedAt) / 1000
+						);
+					} else {
+						room.blackTime = Math.floor(
+							room.blackTime - (Date.now() - room.updatedAt) / 1000
+						);
+					}
+					room.updatedAt = Date.now();
+				}
+
 				const response = {
 					err: false,
 					errMessage: '',
@@ -195,14 +208,22 @@ module.exports = io => {
 
 		socket.on('move', async data => {
 			try {
-				const { move, roomId, pgn, ended, resultMessage } = data;
+				const {
+					move,
+					roomId,
+					pgn,
+					ended,
+					resultMessage,
+					whiteTime,
+					blackTime,
+				} = data;
 				const room = rooms.get(roomId);
 
 				if (room.white && room.black && !room.started) {
 					room.started = true;
 				}
 
-        room.turn = room.turn === 'white' ? 'black' : 'white';
+				room.turn = room.turn === 'white' ? 'black' : 'white';
 
 				room.pgn = pgn;
 
@@ -222,7 +243,48 @@ module.exports = io => {
 					);
 				}
 
+				room.updatedAt = Date.now();
+
+				room.whiteTime = whiteTime;
+				room.blackTime = blackTime;
+
 				socket.to(roomId).emit('move', { move, room });
+			} catch (e) {
+				console.log(e);
+			}
+		});
+
+		socket.on('timveOver', async data => {
+			try {
+				const { roomId, userId } = data;
+				const room = rooms.get(roomId);
+
+				if (
+					!room ||
+					(userId !== room?.white?.userId && userId !== room?.black?.userId)
+				) {
+					return;
+				}
+
+				room.ended = true;
+				if (userId === room?.white?.userId) {
+					room.resultMessage = 'Белые просрочили время, победа черных!';
+				} else {
+					room.resultMessage = 'Черные просрочили время, победа белых!';
+				}
+
+				socket.to(roomId).emit('updateRommInfo', room);
+
+				await gameService.createGame(
+					room?.id,
+					room?.white?.userId,
+					room?.black?.userId,
+					room?.resultMessage,
+					JSON.stringify(room.messages),
+					room.pgn,
+					room.time,
+					room.type
+				);
 			} catch (e) {
 				console.log(e);
 			}
