@@ -57,6 +57,7 @@ const GameInfo = ({
 	setDrawOffer,
   whiteTime,
   blackTime,
+  stopTimer
 }) => {
 	const { store } = useContext(Context);
 	const [copy, setCopy] = useState(false);
@@ -282,6 +283,8 @@ const GameInfo = ({
 											socket.emit('confirmDraw', {
 												roomId: roomInfo?.id,
 												userId: store?.user?.id || store?.browserId,
+                        whiteTime,
+                        blackTime,
 											});
 											setDrawOffer(false);
 											setSendDraw(false);
@@ -355,7 +358,11 @@ const GameInfo = ({
 														socket.emit('resign', {
 															roomId: roomInfo?.id,
 															userId: store?.user?.id || store?.browserId,
+                              blackTime,
+                              whiteTime,
 														});
+                            stopTimer()
+                            
 														setRoomInfo(prev => {
 															return {
 																...prev,

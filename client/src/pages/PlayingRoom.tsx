@@ -59,12 +59,27 @@ const PlayingRoom = () => {
 		clearTimeout(timer.current);
 	}
 
-	function decrementBlackTimer() {
-		setBlackTime(prev => prev - 1);
+	function decrementBlackTimer() {    
+		setBlackTime(prev => {
+      console.log(prev);
+      if (prev <= 1) {
+        console.log('HERE')
+        socket.emit('timeOver', {roomId, color: 'black', userId: store?.user?.id || store?.browserId})
+        stopTimer();
+      }
+      return Math.max(0, prev - 1)});
 	}
 
 	function decrementWhiteTimer() {
-		setWhiteTime(prev => prev - 1);
+		setWhiteTime(prev => {
+      console.log(prev);
+      if (prev <= 1) {
+        console.log('HERE')
+        socket.emit('timeOver', {roomId, color: 'white', userId: store?.user?.id || store?.browserId})
+        stopTimer();
+      }
+      return Math.max(0, prev - 1)
+    });
 	}
 
 	function getResultMessage() {
@@ -145,7 +160,8 @@ const PlayingRoom = () => {
 					stopTimer();
 					setResultMessage(getResultMessage());
 				}
-				if (!chess.isGameOver()) {
+        console.log(roomInfo)
+				if (!chess.isGameOver() && roomInfo?.timeControl) {
 					startTimer();
 				}
 
@@ -154,7 +170,7 @@ const PlayingRoom = () => {
 				return null;
 			} // null if the move was illegal, the move object if the move was legal
 		},
-		[chess]
+		[chess, roomInfo]
 	);
 
 	// onDrop function
@@ -225,6 +241,9 @@ const PlayingRoom = () => {
 			setRoomInfo(room);
 			setWhiteTime(room?.whiteTime);
 			setBlackTime(room?.blackTime);
+      if (!room.ended && room.started && room.timeControl) {
+        startTimer();
+      }
 		});
 	}, [makeAMove]);
 
@@ -235,6 +254,8 @@ const PlayingRoom = () => {
 			if (room?.ended) {
 				stopTimer();
 			}
+      setWhiteTime(room?.whiteTime);
+			setBlackTime(room?.blackTime);
 		});
 
 		socket.on('declineDraw', data => {
@@ -295,10 +316,10 @@ const PlayingRoom = () => {
 		<DefaultLayout>
 			<div className="container relative">
 				<div className="min-h-[100vh] md:min-h-[79vh] flex flex-col md:flex-row gap-8 justify-start md:justify-center items-center">
-					<div>
+					{/* <div>
 						{whiteTime} {blackTime}{' '}
 						<button onClick={() => stopTimer()}>stop</button>
-					</div>
+					</div> */}
 					<div className="hidden md:block">
 						<GameInfo
 							roomInfo={roomInfo}
@@ -313,6 +334,7 @@ const PlayingRoom = () => {
 							setDrawOffer={setDrawOffer}
               whiteTime={whiteTime}
               blackTime={blackTime}
+              stopTimer={stopTimer}
 						/>
 					</div>
 
@@ -341,6 +363,7 @@ const PlayingRoom = () => {
 							setDrawOffer={setDrawOffer}
               whiteTime={whiteTime}
               blackTime={blackTime}
+              stopTimer={stopTimer}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (

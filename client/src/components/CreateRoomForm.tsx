@@ -243,7 +243,7 @@ const CreateRoomForm = () => {
 													<Slider
 														onValueChange={value => field.onChange(value[0])}
 														defaultValue={[field.value]}
-														min={1}
+														min={0}
 														max={30}
 													/>
 												</FormControl>

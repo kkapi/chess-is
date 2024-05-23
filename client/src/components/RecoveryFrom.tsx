@@ -134,7 +134,7 @@ export function RecoveryForm() {
 							</Button>
 						</div>
 						<div className="mt-4 text-center text-sm">
-							Уже есть аккаунт?{' '}
+							Вспомнили пароль?{' '}
 							<Link to={LOGIN_ROUTE} className="underline">
 								Войти
 							</Link>

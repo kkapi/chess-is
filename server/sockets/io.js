@@ -254,26 +254,30 @@ module.exports = io => {
 			}
 		});
 
-		socket.on('timveOver', async data => {
+		socket.on('timeOver', async data => {
 			try {
-				const { roomId, userId } = data;
+				const { roomId, userId, color } = data;
+        console.log("TIMEOVER", {roomId, color})
 				const room = rooms.get(roomId);
 
 				if (
 					!room ||
+          room.ended ||
 					(userId !== room?.white?.userId && userId !== room?.black?.userId)
 				) {
 					return;
 				}
 
 				room.ended = true;
-				if (userId === room?.white?.userId) {
+				if (color === 'w') {
+          room.whiteTime = 0;
 					room.resultMessage = 'Белые просрочили время, победа черных!';
 				} else {
+          room.blackTime = 0;
 					room.resultMessage = 'Черные просрочили время, победа белых!';
 				}
 
-				socket.to(roomId).emit('updateRommInfo', room);
+				io.to(roomId).emit('updateRommInfo', room);
 
 				await gameService.createGame(
 					room?.id,
@@ -346,7 +350,7 @@ module.exports = io => {
 
 		socket.on('resign', async data => {
 			try {
-				const { roomId, userId } = data;
+				const { roomId, userId, blackTime, whiteTime } = data;
 				const room = rooms.get(roomId);
 
 				if (
@@ -357,6 +361,8 @@ module.exports = io => {
 				}
 
 				room.ended = true;
+        room.blackTime = blackTime;
+        room.whiteTime = whiteTime;
 				if (userId === room?.white?.userId) {
 					room.resultMessage = 'Белые сдались, победа черных!';
 				} else {
@@ -406,7 +412,7 @@ module.exports = io => {
 
 		socket.on('confirmDraw', async data => {
 			try {
-				const { roomId, userId } = data;
+				const { roomId, userId, whiteTime, blackTime } = data;
 
 				const room = rooms.get(roomId);
 
@@ -418,6 +424,8 @@ module.exports = io => {
 				}
 
 				room.ended = true;
+        room.whiteTime = whiteTime;
+        room.blackTime = blackTime;
 				room.resultMessage = 'Ничья! Соперники согласились на ничью.';
 
 				io.to(roomId).emit('updateRommInfo', room);
