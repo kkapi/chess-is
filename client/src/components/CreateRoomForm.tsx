@@ -72,7 +72,7 @@ const CreateRoomForm = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="">
+			<div className="my-6 md:my-0">
 				{isWating ? (
 					<div className="flex flex-col text-center items-center gap-2 md:gap-4">
 						<div className="mt-6 md:mt-0 text-xl md:text-2xl font-bold flex justify-center items-center">

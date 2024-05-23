@@ -35,7 +35,7 @@ class MailService {
           <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="max-width:37.5em;background-color:#ffffff;border:1px solid #f0f0f0;padding:45px">
             <tbody>
               <tr style="width:100%">
-                <td><img alt="chess" height="70" src="https://downloader.disk.yandex.ru/preview/cd102121a54d384f2440636125543fe9e1dd9aabce4187f5b6f41faa2d8dfb6e/664cc5c4/7lDJkUWsISParlBj0vQWT3BjZ8A6ppDMWrZxOQnykNgB4AaExWlQrlV16n8UweVNaOVWzWX3RBBGqvJulhBkPQ%3D%3D?uid=0&filename=1.jpg&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048" style="display:block;outline:none;border:none;text-decoration:none" width="125" />
+                <td><img alt="chess" height="70" src="https://i.postimg.cc/GhYpF4Tw/picture.webp" style="display:block;outline:none;border:none;text-decoration:none" width="125" />
                   <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
                     <tbody>
                       <tr>
@@ -82,7 +82,7 @@ class MailService {
           <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="max-width:37.5em;background-color:#ffffff;border:1px solid #f0f0f0;padding:45px">
             <tbody>
               <tr style="width:100%">
-                <td><img alt="chess" height="70" src="https://downloader.disk.yandex.ru/preview/cd102121a54d384f2440636125543fe9e1dd9aabce4187f5b6f41faa2d8dfb6e/664cc5c4/7lDJkUWsISParlBj0vQWT3BjZ8A6ppDMWrZxOQnykNgB4AaExWlQrlV16n8UweVNaOVWzWX3RBBGqvJulhBkPQ%3D%3D?uid=0&filename=1.jpg&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048" style="display:block;outline:none;border:none;text-decoration:none" width="125" />
+                <td><img alt="chess" height="70" src="https://i.postimg.cc/GhYpF4Tw/picture.webp" style="display:block;outline:none;border:none;text-decoration:none" width="125" />
                   <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
                     <tbody>
                       <tr>

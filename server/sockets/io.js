@@ -39,6 +39,8 @@ module.exports = io => {
 					started: false,
 					ended: false,
 
+          turn: 'white',
+
 					resultMessage: '',
 
 					pgn: '',
@@ -47,6 +49,7 @@ module.exports = io => {
 					whiteTime: time,
 					blackTime: time,
 					increment: increment,
+          updatedAt: Date.now(),
 
 					whiteConnected: false,
 					blackConnected: false,
@@ -198,6 +201,8 @@ module.exports = io => {
 				if (room.white && room.black && !room.started) {
 					room.started = true;
 				}
+
+        room.turn = room.turn === 'white' ? 'black' : 'white';
 
 				room.pgn = pgn;
 

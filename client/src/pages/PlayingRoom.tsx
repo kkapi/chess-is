@@ -1,4 +1,11 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { observer } from 'mobx-react-lite';
 import socket from '@/socket/socket';
 import { Link, useParams } from 'react-router-dom';
@@ -33,6 +40,27 @@ const PlayingRoom = () => {
 
 	const [drawOffer, setDrawOffer] = useState(false);
 	const [sendDraw, setSendDraw] = useState(false);
+
+	const [whiteTime, setWhiteTime] = useState(300);
+	const [blackTime, setBlackTime] = useState(300);
+
+	const timer = useRef(null);
+
+	function startTimer() {
+		if (timer.current) {
+			clearInterval(timer.current);
+		}
+		const callback = chess.turn() === 'w' ? decrementWhiteTimer : decrementBlackTimer;
+    timer.current = setInterval(callback, 1000);
+	}
+
+	function decrementBlackTimer() {
+		setBlackTime(prev => prev - 1);
+	}
+
+	function decrementWhiteTimer() {
+		setWhiteTime(prev => prev - 1);
+	}
 
 	function getResultMessage() {
 		let mes = '';
@@ -86,6 +114,14 @@ const PlayingRoom = () => {
 					setPlayerType(response?.data?.playerType);
 					setRoomInfo(response?.data?.room);
 					setMessages(response?.data?.room?.messages);
+
+					setWhiteTime(response?.data?.room?.whiteTime);
+					setBlackTime(response?.data?.room?.blackTime);
+
+          if (response?.data?.room?.started) {
+            startTimer();
+          }
+
 					if (response?.data?.playerType === 'b') {
 						setOrientation('black');
 					}
@@ -103,7 +139,7 @@ const PlayingRoom = () => {
 				if (chess.isGameOver()) {
 					setResultMessage(getResultMessage());
 				}
-
+        startTimer();
 				return result;
 			} catch (e) {
 				return null;
@@ -229,7 +265,9 @@ const PlayingRoom = () => {
 		<DefaultLayout>
 			<div className="container relative">
 				<div className="min-h-[100vh] md:min-h-[79vh] flex flex-col md:flex-row gap-8 justify-start md:justify-center items-center">
-					
+					<div>
+						{whiteTime} {blackTime}
+					</div>
 					<div className="hidden md:block">
 						<GameInfo
 							roomInfo={roomInfo}
@@ -240,8 +278,8 @@ const PlayingRoom = () => {
 							setRoomInfo={setRoomInfo}
 							sendDraw={sendDraw}
 							setSendDraw={setSendDraw}
-              drawOffer={drawOffer}
-              setDrawOffer={setDrawOffer}
+							drawOffer={drawOffer}
+							setDrawOffer={setDrawOffer}
 						/>
 					</div>
 
@@ -266,8 +304,8 @@ const PlayingRoom = () => {
 							setRoomInfo={setRoomInfo}
 							sendDraw={sendDraw}
 							setSendDraw={setSendDraw}
-              drawOffer={drawOffer}
-              setDrawOffer={setDrawOffer}
+							drawOffer={drawOffer}
+							setDrawOffer={setDrawOffer}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (
