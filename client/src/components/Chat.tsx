@@ -12,13 +12,7 @@ import { Input } from './ui/input';
 import { useEffect, useRef, useState } from 'react';
 import socket from '@/socket/socket';
 
-const Chat = ({
-	roomId,
-	messages,
-	setMessages,
-	color,
-	login,
-}) => {
+const Chat = ({ roomId, messages, setMessages, color, login }) => {
 	const [message, setMessage] = useState('');
 	const chatRef = useRef();
 
@@ -41,7 +35,7 @@ const Chat = ({
 	}, [messages]);
 
 	return (
-		<Card className="w-[350px] md:w-[400px]">
+		<Card className="w-[350px] md:w-[370px] h-[500px]">
 			<CardHeader className="text-center">
 				<CardTitle>Чат</CardTitle>
 				<CardDescription>Пожалуйста, будьте вежливы в чате.</CardDescription>
@@ -49,25 +43,46 @@ const Chat = ({
 			<CardContent>
 				<Card
 					ref={chatRef}
-					className="h-[200px] md:h-[312px] overflow-y-auto overflow-x-hidden p-5 flex flex-col gap-2 justify-start w-full whitespace-pre-wrap"
+					className="h-[300px] md:h-[312px] overflow-y-auto overflow-x-hidden p-5 flex flex-col gap-2 justify-start w-full whitespace-pre-wrap"
 				>
-					{messages.map((mes, i) => (
-						<div key={i} className={getMesClass(mes)}>
-							<div className="text-xs">
-								{mes?.login}{' '}
-								{new Date(mes?.time)
-									.toLocaleTimeString()
-									.split(':')
-									.slice(0, 2)
-									.join(':')}
+					{messages.map((mes, i) => {
+						if (mes?.type === 'info') {
+							return (
+								<div
+									key={i}
+									className="bg-secondary p-1 rounded-md pr-3 pl-3 self-start mb-1 border border-foreground"
+								>
+									<div className="text-xs">
+										{mes?.login}{' '}
+										{new Date(mes?.time)
+											.toLocaleTimeString()
+											.split(':')
+											.slice(0, 2)
+											.join(':')}
+									</div>
+									<div className='text-xs'>{mes?.message}</div>
+								</div>
+							);
+						}
+						return (
+							<div key={i} className={getMesClass(mes)}>
+								<div className="text-xs">
+									{mes?.login}{' '}
+									{new Date(mes?.time)
+										.toLocaleTimeString()
+										.split(':')
+										.slice(0, 2)
+										.join(':')}
+								</div>
+								<div>{mes?.message}</div>
 							</div>
-							<div>{mes?.message}</div>
-						</div>
-					))}
+						);
+					})}
 				</Card>
 			</CardContent>
 			<CardFooter>
-				<form className="flex justify-self-center items-start gap-4 w-full"
+				<form
+					className="flex justify-self-center items-start gap-4 w-full"
 					onSubmit={e => {
 						e.preventDefault();
 						if (!message) return;

@@ -128,8 +128,7 @@ const Header = () => {
 								</>
 							) : (
 								<DropdownMenuLabel>Посетитель</DropdownMenuLabel>
-							)}
-							<DropdownMenuItem>Поддержка</DropdownMenuItem>
+							)}							
 
 							<DropdownMenuSeparator />
 							{store.isAuth ? (

@@ -5,7 +5,7 @@ const rooms = new Map();
 
 module.exports = io => {
 	io.on('connection', socket => {
-		console.log('New socket aaaa');
+		console.log('Новое подключение');
 
 		socket.on('print_rooms', () => {
 			console.log(rooms);
@@ -217,6 +217,65 @@ module.exports = io => {
 			}
 
 			socket.to(roomId).emit('updateRommInfo', room);
+		});
+
+		socket.on('drawOffer', data => {
+			const { roomId, userId, playerType, login } = data;
+			console.log('DRAW OFFER');
+			const room = rooms.get(roomId);
+			if (
+				!room ||
+				(userId !== room?.white?.userId && userId !== room?.black?.userId)
+			) {
+				return;
+			}
+
+      const message = 'Отправлено предложение о ничье'
+			const newMes = { message, time: Date.now(), type: 'info', login };
+			room.messages.push(newMes);
+
+			io.to(roomId).emit('message', newMes);
+
+			socket.to(roomId).emit('drawOffer', { userId, playerType });
+		});
+
+		socket.on('confirmDraw', data => {
+			const { roomId, userId } = data;
+
+			const room = rooms.get(roomId);
+
+			if (
+				!room ||
+				(userId !== room?.white?.userId && userId !== room?.black?.userId)
+			) {
+				return;
+			}
+
+			room.ended = true;
+			room.resultMessage = 'Ничья! Соперники согласились на ничью.';
+
+			io.to(roomId).emit('updateRommInfo', room);
+		});
+
+		socket.on('declineDraw', data => {
+			const { roomId, userId, login } = data;
+
+			const room = rooms.get(roomId);
+
+			if (
+				!room ||
+				(userId !== room?.white?.userId && userId !== room?.black?.userId)
+			) {
+				return;
+			}
+
+      const message = 'Предложение отклонено'
+			const newMes = { message, time: Date.now(), type: 'info', login };
+			room.messages.push(newMes);
+
+			io.to(roomId).emit('message', newMes);
+
+			io.to(roomId).emit('declineDraw', { userId });
 		});
 
 		socket.on('disconnecting', async reason => {

@@ -10,6 +10,7 @@ import Chat from '@/components/Chat';
 import useWindowDimensions from '@/hooks/useWindowDimensions ';
 import GameInfo from '@/components/GameInfo';
 import { HOME_ROUTE } from '@/lib/constants';
+import { Button } from '@/components/ui/button';
 
 const PlayingRoom = () => {
 	const { roomId } = useParams();
@@ -29,6 +30,9 @@ const PlayingRoom = () => {
 	const [resultMessage, setResultMessage] = useState('');
 
 	const [error, setError] = useState(null);
+
+	const [drawOffer, setDrawOffer] = useState(false);
+	const [sendDraw, setSendDraw] = useState(false);
 
 	function getResultMessage() {
 		let mes = '';
@@ -164,8 +168,26 @@ const PlayingRoom = () => {
 	useEffect(() => {
 		socket.on('updateRommInfo', room => {
 			setRoomInfo(room);
+			setSendDraw(false);
+		});
+
+		socket.on('declineDraw', data => {
+			setDrawOffer(false);
+			setSendDraw(false);
 		});
 	}, []);
+
+	useEffect(() => {
+		socket.on('drawOffer', data => {
+			const { userId, playerType: type } = data;
+			console.log(data);
+			console.log(playerType);
+
+			if (playerType === 'w' || playerType === 'b') {
+				setDrawOffer(true);
+			}
+		});
+	}, [playerType]);
 
 	useEffect(() => {
 		return () => {
@@ -207,6 +229,7 @@ const PlayingRoom = () => {
 		<DefaultLayout>
 			<div className="container relative">
 				<div className="min-h-[100vh] md:min-h-[79vh] flex flex-col md:flex-row gap-8 justify-start md:justify-center items-center">
+					
 					<div className="hidden md:block">
 						<GameInfo
 							roomInfo={roomInfo}
@@ -214,7 +237,11 @@ const PlayingRoom = () => {
 							setOrientation={setOrientation}
 							playerType={playerType}
 							resultMessage={resultMessage}
-              setRoomInfo={setRoomInfo}
+							setRoomInfo={setRoomInfo}
+							sendDraw={sendDraw}
+							setSendDraw={setSendDraw}
+              drawOffer={drawOffer}
+              setDrawOffer={setDrawOffer}
 						/>
 					</div>
 
@@ -236,7 +263,11 @@ const PlayingRoom = () => {
 							playerType={playerType}
 							setOrientation={setOrientation}
 							resultMessage={resultMessage}
-              setRoomInfo={setRoomInfo}
+							setRoomInfo={setRoomInfo}
+							sendDraw={sendDraw}
+							setSendDraw={setSendDraw}
+              drawOffer={drawOffer}
+              setDrawOffer={setDrawOffer}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (
