@@ -362,18 +362,20 @@ module.exports = io => {
 					playerType = 'b';
 				}
 
+        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 				if (room.started && !room.ended) {
 					if (room.turn === 'white') {
 						room.whiteTime = Math.floor(
-							room.whiteTime - (Date.now() - room.updatedAt) / 1000
+							room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
 						);
 					} else {
 						room.blackTime = Math.floor(
-							room.blackTime - (Date.now() - room.updatedAt) / 1000
+							room.blackTime - ((Date.now() - room.updatedAt) / 1000)
 						);
 					}
 					room.updatedAt = Date.now();
 				}
+        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 
 				const response = {
 					err: false,
@@ -513,6 +515,21 @@ module.exports = io => {
 						room.blackConnected = false;
 					}
 				}
+
+        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+        if (room.started && !room.ended) {
+					if (room.turn === 'white') {
+						room.whiteTime = Math.floor(
+							room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
+						);
+					} else {
+						room.blackTime = Math.floor(
+							room.blackTime - ((Date.now() - room.updatedAt) / 1000)
+						);
+					}
+					room.updatedAt = Date.now();
+				}
+        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 
 				socket.to(roomId).emit('updateRommInfo', room);
 
@@ -676,6 +693,21 @@ module.exports = io => {
 								room.blackConnected = false;
 							}
 						}
+            
+            // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+            if (room.started && !room.ended) {
+              if (room.turn === 'white') {
+                room.whiteTime = Math.floor(
+                  room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
+                );
+              } else {
+                room.blackTime = Math.floor(
+                  room.blackTime - ((Date.now() - room.updatedAt) / 1000)
+                );
+              }
+              room.updatedAt = Date.now();
+            }
+            // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 						socket.to(roomId).emit('updateRommInfo', room);
 
