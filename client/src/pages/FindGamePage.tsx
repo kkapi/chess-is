@@ -38,6 +38,8 @@ const FindGamePage = () => {
 	const [chosenTime, setChosenTime] = useState(15);
 	const [chosenIncrement, setChosenIncrement] = useState(15);
 
+  const [count, setCount] = useState({authorized: 0, unauthorized: 0});
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -52,6 +54,13 @@ const FindGamePage = () => {
 			navigate(`/play/${roomId}`);
 		});
 	}, []);
+
+  useEffect(() => {
+    socket.on('queueCount', data => {
+      const {authorized, unauthorized} = data;
+      setCount({authorized, unauthorized});
+    })
+  })
 
   function startQueue(time, increment) {
     setChosenTime(time);
@@ -271,6 +280,10 @@ const FindGamePage = () => {
 								<div className="flex flex-col justify-center items-center gap-4">
 									<div className="mt-6 md:mt-0 text-xl md:text-2xl text-foreground font-bold flex justify-center items-center">
 										Подбор оппонента
+									</div>
+                  <div className="flex flex-col justify-center items-center gap-1 text-base">
+										<span>Авторизованных пользователей в поиске: {count.authorized}</span>{' '}
+										<span>Посетителей в поиске: {count.unauthorized}</span>
 									</div>
 									<div className="flex justify-center items-center gap-5 text-base">
 										<span>Минут на партию: {chosenTime} мин.</span>{' '}

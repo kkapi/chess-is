@@ -14,10 +14,14 @@ module.exports = io => {
 			console.log(rooms);
 		});
 
-    socket.on('cancelFind', () => {
-      authorizedQueue.delete(socket);
-      unauthorizedQueue.delete(socket);
-    })
+		socket.on('cancelFind', () => {
+			authorizedQueue.delete(socket);
+			unauthorizedQueue.delete(socket);
+			io.emit('queueCount', {
+				authorized: authorizedQueue.size,
+				unauthorized: unauthorizedQueue.size,
+			});
+		});
 
 		socket.on('findGame', async data => {
 			try {
@@ -95,7 +99,11 @@ module.exports = io => {
 
 							rooms.set(roomId, newRoom);
 
-              authorizedQueue.delete(opponent);
+							authorizedQueue.delete(opponent);
+							io.emit('queueCount', {
+								authorized: authorizedQueue.size,
+								unauthorized: unauthorizedQueue.size,
+							});
 
 							socket.emit('foundGame', { roomId });
 							opponent.emit('foundGame', { roomId });
@@ -104,9 +112,13 @@ module.exports = io => {
 						}
 					}
 					authorizedQueue.set(socket, { userId, login, time, increment });
+					io.emit('queueCount', {
+						authorized: authorizedQueue.size,
+						unauthorized: unauthorizedQueue.size,
+					});
 				} else {
 					// Незарегистрированный
-          for (let [opponent, info] of unauthorizedQueue.entries()) {
+					for (let [opponent, info] of unauthorizedQueue.entries()) {
 						const {
 							userId: opponentId,
 							login: opponentLogin,
@@ -177,7 +189,11 @@ module.exports = io => {
 
 							rooms.set(roomId, newRoom);
 
-              unauthorizedQueue.delete(opponent);
+							unauthorizedQueue.delete(opponent);
+							io.emit('queueCount', {
+								authorized: authorizedQueue.size,
+								unauthorized: unauthorizedQueue.size,
+							});
 
 							socket.emit('foundGame', { roomId });
 							opponent.emit('foundGame', { roomId });
@@ -186,6 +202,10 @@ module.exports = io => {
 						}
 					}
 					unauthorizedQueue.set(socket, { userId, login, time, increment });
+					io.emit('queueCount', {
+						authorized: authorizedQueue.size,
+						unauthorized: unauthorizedQueue.size,
+					});
 				}
 			} catch (e) {
 				console.log(e);
@@ -367,20 +387,20 @@ module.exports = io => {
 					playerType = 'b';
 				}
 
-        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+				// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 				if (room.started && !room.ended) {
 					if (room.turn === 'white') {
 						room.whiteTime = Math.floor(
-							room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
+							room.whiteTime - (Date.now() - room.updatedAt) / 1000
 						);
 					} else {
 						room.blackTime = Math.floor(
-							room.blackTime - ((Date.now() - room.updatedAt) / 1000)
+							room.blackTime - (Date.now() - room.updatedAt) / 1000
 						);
 					}
 					room.updatedAt = Date.now();
 				}
-        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+				// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 
 				const response = {
 					err: false,
@@ -521,20 +541,20 @@ module.exports = io => {
 					}
 				}
 
-        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
-        if (room.started && !room.ended) {
+				// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+				if (room.started && !room.ended) {
 					if (room.turn === 'white') {
 						room.whiteTime = Math.floor(
-							room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
+							room.whiteTime - (Date.now() - room.updatedAt) / 1000
 						);
 					} else {
 						room.blackTime = Math.floor(
-							room.blackTime - ((Date.now() - room.updatedAt) / 1000)
+							room.blackTime - (Date.now() - room.updatedAt) / 1000
 						);
 					}
 					room.updatedAt = Date.now();
 				}
-        // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+				// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
 
 				socket.to(roomId).emit('updateRommInfo', room);
 
@@ -680,8 +700,8 @@ module.exports = io => {
 
 		socket.on('disconnecting', async reason => {
 			try {
-        authorizedQueue.delete(socket);
-        unauthorizedQueue.delete(socket);
+				authorizedQueue.delete(socket);
+				unauthorizedQueue.delete(socket);
 
 				if (socket.chessInfo?.rooms) {
 					for (let roomId of socket.chessInfo.rooms) {
@@ -701,21 +721,21 @@ module.exports = io => {
 								room.blackConnected = false;
 							}
 						}
-            
-            // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
-            if (room.started && !room.ended) {
-              if (room.turn === 'white') {
-                room.whiteTime = Math.floor(
-                  room.whiteTime - ((Date.now() - room.updatedAt) / 1000)
-                );
-              } else {
-                room.blackTime = Math.floor(
-                  room.blackTime - ((Date.now() - room.updatedAt) / 1000)
-                );
-              }
-              room.updatedAt = Date.now();
-            }
-            // ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+						// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????
+						if (room.started && !room.ended) {
+							if (room.turn === 'white') {
+								room.whiteTime = Math.floor(
+									room.whiteTime - (Date.now() - room.updatedAt) / 1000
+								);
+							} else {
+								room.blackTime = Math.floor(
+									room.blackTime - (Date.now() - room.updatedAt) / 1000
+								);
+							}
+							room.updatedAt = Date.now();
+						}
+						// ВРЕМЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 						socket.to(roomId).emit('updateRommInfo', room);
 
