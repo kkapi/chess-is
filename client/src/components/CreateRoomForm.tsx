@@ -111,7 +111,9 @@ const CreateRoomForm = () => {
 							</span>
 						</div>
 						<Button
-							onClick={() => socket.emit('cancelRoom', { roomId: link })}
+							onClick={() => {
+                setIsWating(false);
+                socket.emit('cancelRoom', { roomId: link })}}
 							size="lg"
 							className="text-lg w-[200px]"
 						>

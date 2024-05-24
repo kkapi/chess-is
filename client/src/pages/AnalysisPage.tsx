@@ -1,4 +1,4 @@
-import { AnalysisBoard } from '@/components/AnalysisBoard'
+import { StyledBoard } from '@/components/StyledBoard'
 import DefaultLayout from '@/layouts/DefaultLayout'
 
 const AnalysisPage = () => {
@@ -6,7 +6,8 @@ const AnalysisPage = () => {
     <div className="min-h-screen min-w-screen flex flex-col justify-between">
 			<DefaultLayout>
       <div className='container flex justify-center items-center min-h-[80vh]'>
-          <AnalysisBoard />
+          {/* <AnalysisBoard /> */}
+          {<StyledBoard />}
         </div>
 			</DefaultLayout>
 		</div>
