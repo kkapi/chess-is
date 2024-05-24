@@ -22,7 +22,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 const FormSchema = z.object({
 	color: z.string(),
-	variant: z.string(),
+
 	timeControl: z.boolean(),
 	private: z.boolean(),
 	time: z.number(),
@@ -34,7 +34,7 @@ const CreateRoomForm = () => {
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			color: 'Случайный',
-			variant: 'Стандарт',
+
 			timeControl: false,
 			private: false,
 			time: 15,
@@ -56,7 +56,7 @@ const CreateRoomForm = () => {
 				userId: store.user?.id || store?.browserId,
 				login: store.user?.login || 'Аноним',
 				color: data.color,
-				variant: data.variant,
+				variant: 'Стандарт',
 				timeControl: data.timeControl,
 				private: data.private,
 				time: data.time,
@@ -81,7 +81,6 @@ const CreateRoomForm = () => {
 						</div>
 						<div className="md:text-lg flex gap-2 items-center">
 							С вами сыграет первый, кто перейдет по этой ссылке{' '}
-							
 						</div>
 						<div className="bg-secondary p-3 rounded-lg border-secondary border flex gap-2 w-fit items-center justify-center text-muted-foreground">
 							{`${CLIENT_URL}${link}`}{' '}
@@ -111,13 +110,13 @@ const CreateRoomForm = () => {
 								<QRCodeSVG value={`${CLIENT_URL}${link}`} />
 							</span>
 						</div>
-            <Button
-								onClick={() => socket.emit('cancelRoom', { roomId: link })}
-                size="lg"
-                className='text-lg w-[200px]'
-							>
-								Отмена
-							</Button>
+						<Button
+							onClick={() => socket.emit('cancelRoom', { roomId: link })}
+							size="lg"
+							className="text-lg w-[200px]"
+						>
+							Отмена
+						</Button>
 					</div>
 				) : (
 					<Form {...form}>
@@ -125,41 +124,16 @@ const CreateRoomForm = () => {
 							onSubmit={form.handleSubmit(onSubmit)}
 							className="w-full space-y-6 p-8 flex flex-col justify-start items-center border-2 bordre-buted-background rounded-lg"
 						>
-							<div className="text-center text-xl font-bold">
+							<div className="text-center text-xl font-bold md:text-3xl">
 								Настройка комнаты
 							</div>
-							<div className="flex flex-row items-center justify-center w-full gap-8">
-								<FormField
-									control={form.control}
-									name="variant"
-									render={({ field }) => (
-										<FormItem className="text-center">
-											<FormLabel className="text-base">Вариант</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												value={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<div>{field.value}</div>
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													<SelectItem value="Стандарт">Стандарт</SelectItem>
-													<SelectItem value="Шахматы 960">
-														Шахматы 960
-													</SelectItem>
-												</SelectContent>
-											</Select>
-										</FormItem>
-									)}
-								/>
+							<div className="flex flex-row items-start justify-center gap-8">
 								<FormField
 									control={form.control}
 									name="color"
 									render={({ field }) => (
 										<FormItem className="text-center">
-											<FormLabel className="text-base">Цвет</FormLabel>
+											<FormLabel className="text-base md:text-lg">Цвет</FormLabel>
 											<Select
 												onValueChange={field.onChange}
 												value={field.value}
@@ -169,7 +143,7 @@ const CreateRoomForm = () => {
 														<div>{field.value}</div>
 													</SelectTrigger>
 												</FormControl>
-												<SelectContent>
+												<SelectContent >
 													<SelectItem value="Случайно">Случайно</SelectItem>
 													<SelectItem value="Белые">Белые</SelectItem>
 													<SelectItem value="Черные">Черные</SelectItem>
@@ -186,7 +160,7 @@ const CreateRoomForm = () => {
 								render={({ field }) => (
 									<FormItem className="flex flex-row items-center justify-start gap-6">
 										<div className="space-y-0.5">
-											<FormLabel className="text-base">
+											<FormLabel className="text-base md:text-lg">
 												Контроль времени
 											</FormLabel>
 											<FormDescription>Ограничение по времени</FormDescription>
@@ -206,7 +180,7 @@ const CreateRoomForm = () => {
 								render={({ field }) => (
 									<FormItem className="flex flex-row items-center justify-start gap-6">
 										<div className="space-y-0.5">
-											<FormLabel className="text-base">
+											<FormLabel className="text-base md:text-lg">
 												Приватная комната
 											</FormLabel>
 											<FormDescription>
@@ -230,7 +204,7 @@ const CreateRoomForm = () => {
 										name="time"
 										render={({ field }) => (
 											<FormItem className="w-4/5">
-												<FormLabel>Время</FormLabel>
+												<FormLabel className='md:text-lg'>Время</FormLabel>
 												<FormControl>
 													<Slider
 														onValueChange={value => field.onChange(value[0])}
@@ -250,7 +224,7 @@ const CreateRoomForm = () => {
 										name="increment"
 										render={({ field }) => (
 											<FormItem className="w-4/5">
-												<FormLabel>Добавление</FormLabel>
+												<FormLabel className='md:text-lg'>Добавление</FormLabel>
 												<FormControl>
 													<Slider
 														onValueChange={value => field.onChange(value[0])}
@@ -268,7 +242,7 @@ const CreateRoomForm = () => {
 								</>
 							)}
 
-							<Button type="submit" className="w-80">
+							<Button type="submit" className="w-80 md:text-lg">
 								Создать комнату
 							</Button>
 						</form>

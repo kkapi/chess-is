@@ -14,6 +14,11 @@ module.exports = io => {
 			console.log(rooms);
 		});
 
+    socket.on('cancelFind', () => {
+      authorizedQueue.delete(socket);
+      unauthorizedQueue.delete(socket);
+    })
+
 		socket.on('findGame', async data => {
 			try {
 				const { userId, login, time, increment } = data;
@@ -675,6 +680,9 @@ module.exports = io => {
 
 		socket.on('disconnecting', async reason => {
 			try {
+        authorizedQueue.delete(socket);
+        unauthorizedQueue.delete(socket);
+
 				if (socket.chessInfo?.rooms) {
 					for (let roomId of socket.chessInfo.rooms) {
 						const room = rooms.get(roomId);

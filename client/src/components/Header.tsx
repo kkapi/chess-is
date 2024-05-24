@@ -43,11 +43,11 @@ const Header = () => {
 					<Crown className="w-8 h-8 mr-1" />
 					<span>Шахматы</span>
 				</Link>
-        <Button onClick={() => {
+        {/* <Button onClick={() => {
           socket.emit('print_rooms')
         }}>
           PRINT ROOMS
-        </Button>
+        </Button> */}
 				<Link
 					to={FINDGAME_ROUTE}
 					className="text-muted-foreground transition-colors hover:text-foreground"
