@@ -1,7 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
 const gameService = require('../services/game-service');
 
-const users = new Map();
+const authorizedQueue = new Map();
+const unauthorizedQueue = new Map();
+
 const rooms = new Map();
 
 module.exports = io => {
@@ -10,6 +12,179 @@ module.exports = io => {
 
 		socket.on('print_rooms', () => {
 			console.log(rooms);
+		});
+
+		socket.on('findGame', async data => {
+			try {
+				const { userId, login, time, increment } = data;
+				if (!isNaN(userId)) {
+					// Зарегистрированный
+					for (let [opponent, info] of authorizedQueue.entries()) {
+						const {
+							userId: opponentId,
+							login: opponentLogin,
+							time: opponentTime,
+							increment: opponentIncrement,
+						} = info;
+
+						if (
+							userId !== opponentId &&
+							time === opponentTime &&
+							increment === opponentIncrement
+						) {
+							console.log('Нашлась игра');
+							const roomId = uuidv4();
+
+							const newRoom = {
+								id: roomId,
+								variant: 'Стандарт',
+								type: 'QUEUE',
+								private: false,
+
+								white: null,
+								black: null,
+
+								started: false,
+								ended: false,
+
+								turn: 'white',
+
+								resultMessage: '',
+
+								pgn: '',
+
+								timeControl: true,
+								whiteTime: time * 60,
+								blackTime: time * 60,
+								increment: increment,
+								updatedAt: Date.now(),
+
+								whiteConnected: false,
+								blackConnected: false,
+
+								countConnectedWhite: 0,
+								countConnectedBlack: 0,
+
+								messages: [],
+							};
+
+							if (Math.random() > 0.5) {
+								newRoom.white = {
+									userId: userId,
+									login: login,
+								};
+								newRoom.black = {
+									userId: opponentId,
+									login: opponentLogin,
+								};
+							} else {
+								newRoom.white = {
+									userId: opponentId,
+									login: opponentLogin,
+								};
+								newRoom.black = {
+									userId: userId,
+									login: login,
+								};
+							}
+
+							rooms.set(roomId, newRoom);
+
+              authorizedQueue.delete(opponent);
+
+							socket.emit('foundGame', { roomId });
+							opponent.emit('foundGame', { roomId });
+
+							return;
+						}
+					}
+					authorizedQueue.set(socket, { userId, login, time, increment });
+				} else {
+					// Незарегистрированный
+          for (let [opponent, info] of unauthorizedQueue.entries()) {
+						const {
+							userId: opponentId,
+							login: opponentLogin,
+							time: opponentTime,
+							increment: opponentIncrement,
+						} = info;
+
+						if (
+							userId !== opponentId &&
+							time === opponentTime &&
+							increment === opponentIncrement
+						) {
+							console.log('Нашлась игра');
+							const roomId = uuidv4();
+
+							const newRoom = {
+								id: roomId,
+								variant: 'Стандарт',
+								type: 'QUEUE',
+								private: false,
+
+								white: null,
+								black: null,
+
+								started: false,
+								ended: false,
+
+								turn: 'white',
+
+								resultMessage: '',
+
+								pgn: '',
+
+								timeControl: true,
+								whiteTime: time * 60,
+								blackTime: time * 60,
+								increment: increment,
+								updatedAt: Date.now(),
+
+								whiteConnected: false,
+								blackConnected: false,
+
+								countConnectedWhite: 0,
+								countConnectedBlack: 0,
+
+								messages: [],
+							};
+
+							if (Math.random() > 0.5) {
+								newRoom.white = {
+									userId: userId,
+									login: login,
+								};
+								newRoom.black = {
+									userId: opponentId,
+									login: opponentLogin,
+								};
+							} else {
+								newRoom.white = {
+									userId: opponentId,
+									login: opponentLogin,
+								};
+								newRoom.black = {
+									userId: userId,
+									login: login,
+								};
+							}
+
+							rooms.set(roomId, newRoom);
+
+              unauthorizedQueue.delete(opponent);
+
+							socket.emit('foundGame', { roomId });
+							opponent.emit('foundGame', { roomId });
+
+							return;
+						}
+					}
+					unauthorizedQueue.set(socket, { userId, login, time, increment });
+				}
+			} catch (e) {
+				console.log(e);
+			}
 		});
 
 		socket.on('create_room', async (data, callBack) => {
@@ -104,10 +279,10 @@ module.exports = io => {
 
 		socket.on('cancelRoom', data => {
 			try {
-        let {roomId} = data;
-        roomId = roomId?.split('/')[2];
-        console.log(rooms.get(roomId));
-        rooms.delete(roomId);
+				let { roomId } = data;
+				roomId = roomId?.split('/')[2];
+				console.log(rooms.get(roomId));
+				rooms.delete(roomId);
 			} catch (e) {
 				console.log(e);
 			}
