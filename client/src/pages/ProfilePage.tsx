@@ -1,4 +1,5 @@
 import ChangeInfoForm from '@/components/ChangeInfo';
+import NewPasswordForm from '@/components/NewPasswordForm';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -188,11 +189,22 @@ const ProfilePage = () => {
 									</div>
 								</TabsContent>
 								<TabsContent value="password">
-									<div className="p-3 px-6 flex flex-col gap-4">Пароль</div>
+									<div className="p-3 px-6 flex flex-col gap-4">
+                    <NewPasswordForm />
+                  </div>
 								</TabsContent>
 								<TabsContent value="ui">
 									<div className="p-3 px-6 flex flex-col gap-4">
 										Персонализация
+                    <button onClick={() => {
+                      const options = JSON.parse(localStorage.getItem('options'))
+                      console.log(options);
+                    }}>click</button>
+                     <button onClick={() => {
+                      const options = JSON.parse(localStorage.getItem('options')) || {};
+                      options.board = 'brown',
+                      localStorage.setItem("options", JSON.stringify(options));
+                    }}>click</button>
 									</div>
 								</TabsContent>
 							</Tabs>

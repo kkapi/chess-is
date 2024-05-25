@@ -122,6 +122,41 @@ class UserController {
 			next(error);
 		}
 	}
+
+  async getUserInfo(req, res, next) {
+    try {
+      const userId = req.params.id;
+
+			const user = await userService.getUserInfo(userId);
+
+			res.json({ user });
+		} catch (error) {
+			next(error);
+		}
+  }
+
+  async chageUserInfo(req, res, next) {
+    try {
+      const {userId, name, surname, about, rating, isBlocked, isChatBlocked, isPrivate, role} = req.body;
+
+      const data = await userService.chageUserInfo(userId, name, surname, about, rating, isBlocked, isChatBlocked, isPrivate, role);
+
+      res.json(data);
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async changePassword(req, res, next) {
+    try {
+      const {userId, password, newPassword} = req.body;
+      await userService.changePassword(userId, password, newPassword);
+      
+      res.json('ok')
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = new UserController();

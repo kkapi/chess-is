@@ -1,7 +1,7 @@
 import useCastomPieces from '@/hooks/useCastomPieces';
 import Engine from '@/stockfish/engine';
 import { Chess, validateFen } from 'chess.js';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { Progress } from './ui/progress';
 import useWindowDimensions from '@/hooks/useWindowDimensions ';

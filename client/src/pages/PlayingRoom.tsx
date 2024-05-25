@@ -18,6 +18,7 @@ import useWindowDimensions from '@/hooks/useWindowDimensions ';
 import GameInfo from '@/components/GameInfo';
 import { HOME_ROUTE } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
+import useCastomPieces from '@/hooks/useCastomPieces';
 
 const PlayingRoom = () => {
 	const { roomId } = useParams();
@@ -44,6 +45,13 @@ const PlayingRoom = () => {
 	const [whiteTime, setWhiteTime] = useState(300);
 	const [blackTime, setBlackTime] = useState(300);
 
+	const {
+		customBoardStyle,
+		customDarkSquareStyle,
+		customLightSquareStyle,
+		customPieces,
+	} = useCastomPieces();
+
 	const timer = useRef(null);
 
 	function startTimer() {
@@ -59,27 +67,36 @@ const PlayingRoom = () => {
 		clearTimeout(timer.current);
 	}
 
-	function decrementBlackTimer() {    
+	function decrementBlackTimer() {
 		setBlackTime(prev => {
-      console.log(prev);
-      if (prev <= 1) {
-        console.log('HERE')
-        socket.emit('timeOver', {roomId, color: 'black', userId: store?.user?.id || store?.browserId})
-        stopTimer();
-      }
-      return Math.max(0, prev - 1)});
+			console.log(prev);
+			if (prev <= 1) {
+				console.log('HERE');
+				socket.emit('timeOver', {
+					roomId,
+					color: 'black',
+					userId: store?.user?.id || store?.browserId,
+				});
+				stopTimer();
+			}
+			return Math.max(0, prev - 1);
+		});
 	}
 
 	function decrementWhiteTimer() {
 		setWhiteTime(prev => {
-      console.log(prev);
-      if (prev <= 1) {
-        console.log('HERE')
-        socket.emit('timeOver', {roomId, color: 'white', userId: store?.user?.id || store?.browserId})
-        stopTimer();
-      }
-      return Math.max(0, prev - 1)
-    });
+			console.log(prev);
+			if (prev <= 1) {
+				console.log('HERE');
+				socket.emit('timeOver', {
+					roomId,
+					color: 'white',
+					userId: store?.user?.id || store?.browserId,
+				});
+				stopTimer();
+			}
+			return Math.max(0, prev - 1);
+		});
 	}
 
 	function getResultMessage() {
@@ -138,7 +155,11 @@ const PlayingRoom = () => {
 					setWhiteTime(response?.data?.room?.whiteTime);
 					setBlackTime(response?.data?.room?.blackTime);
 
-					if (response?.data?.room?.started && !response?.data?.room?.ended && response?.data?.room?.timeControl) {
+					if (
+						response?.data?.room?.started &&
+						!response?.data?.room?.ended &&
+						response?.data?.room?.timeControl
+					) {
 						startTimer();
 					}
 
@@ -160,7 +181,7 @@ const PlayingRoom = () => {
 					stopTimer();
 					setResultMessage(getResultMessage());
 				}
-        console.log(roomInfo)
+				console.log(roomInfo);
 				if (!chess.isGameOver() && roomInfo?.timeControl) {
 					startTimer();
 				}
@@ -192,16 +213,16 @@ const PlayingRoom = () => {
 		// illegal move
 		if (move === null) return false;
 
-    let wTime = whiteTime;
-    let bTime = blackTime;
+		let wTime = whiteTime;
+		let bTime = blackTime;
 
-    if (chess.turn() === 'w') {
-      bTime += roomInfo?.increment;
-      setBlackTime(prev => prev + roomInfo?.increment);
-    } else {
-      wTime += roomInfo?.increment;
-      setWhiteTime(wTime);
-    }
+		if (chess.turn() === 'w') {
+			bTime += roomInfo?.increment;
+			setBlackTime(prev => prev + roomInfo?.increment);
+		} else {
+			wTime += roomInfo?.increment;
+			setWhiteTime(wTime);
+		}
 
 		socket.emit('move', {
 			move,
@@ -241,9 +262,9 @@ const PlayingRoom = () => {
 			setRoomInfo(room);
 			setWhiteTime(room?.whiteTime);
 			setBlackTime(room?.blackTime);
-      if (!room.ended && room.started && room.timeControl) {
-        startTimer();
-      }
+			if (!room.ended && room.started && room.timeControl) {
+				startTimer();
+			}
 		});
 	}, [makeAMove]);
 
@@ -254,7 +275,7 @@ const PlayingRoom = () => {
 			if (room?.ended) {
 				stopTimer();
 			}
-      setWhiteTime(room?.whiteTime);
+			setWhiteTime(room?.whiteTime);
 			setBlackTime(room?.blackTime);
 		});
 
@@ -332,9 +353,9 @@ const PlayingRoom = () => {
 							setSendDraw={setSendDraw}
 							drawOffer={drawOffer}
 							setDrawOffer={setDrawOffer}
-              whiteTime={whiteTime}
-              blackTime={blackTime}
-              stopTimer={stopTimer}
+							whiteTime={whiteTime}
+							blackTime={blackTime}
+							stopTimer={stopTimer}
 						/>
 					</div>
 
@@ -347,6 +368,10 @@ const PlayingRoom = () => {
 							position={fen}
 							onPieceDrop={onDrop}
 							boardOrientation={orientation}
+							customBoardStyle={customBoardStyle}
+							customDarkSquareStyle={customDarkSquareStyle}
+							customLightSquareStyle={customLightSquareStyle}
+							customPieces={customPieces}
 						/>
 					</div>
 					<div className="block md:hidden">
@@ -361,9 +386,9 @@ const PlayingRoom = () => {
 							setSendDraw={setSendDraw}
 							drawOffer={drawOffer}
 							setDrawOffer={setDrawOffer}
-              whiteTime={whiteTime}
-              blackTime={blackTime}
-              stopTimer={stopTimer}
+							whiteTime={whiteTime}
+							blackTime={blackTime}
+							stopTimer={stopTimer}
 						/>
 					</div>
 					{(playerType === 'w' || playerType === 'b') && (

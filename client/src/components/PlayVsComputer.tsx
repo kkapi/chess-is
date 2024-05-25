@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 
 import { Clipboard, Undo2, RotateCcw, Repeat2 } from 'lucide-react';
 import useWindowDimensions from '@/hooks/useWindowDimensions ';
+import useCastomPieces from '@/hooks/useCastomPieces';
 
 export const PlayVsComputer = () => {
 	const levels = {
@@ -26,6 +27,13 @@ export const PlayVsComputer = () => {
 	const [stockfishLevel, setStockfishLevel] = useState(2);
 
 	const [resultMessage, setResultMessage] = useState('');
+
+	const {
+		customBoardStyle,
+		customDarkSquareStyle,
+		customLightSquareStyle,
+		customPieces,
+	} = useCastomPieces();
 
 	useEffect(() => {
 		if (width < 500) {
@@ -100,15 +108,22 @@ export const PlayVsComputer = () => {
 		<div className="flex gap-1 md:gap-10 flex-col md:flex-row justify-center items-center">
 			<div className="border rounded-md  w-[400px] md:w-[500px] min-h-[200px] p-8 flex flex-col justify-center items-center gap-5">
 				<div className="font-bold text-2xl">
-					{resultMessage ? <>{resultMessage}</> : <span className='md:text-3xl text-center'>Игра против компьютера</span>}
+					{resultMessage ? (
+						<>{resultMessage}</>
+					) : (
+						<span className="md:text-3xl text-center">
+							Игра против компьютера
+						</span>
+					)}
 				</div>
 				<div className="flex gap-2 justify-center items-center">
 					{Object.entries(levels).map(([level, depth]) => (
 						<Button
 							key={level}
-							className={stockfishLevel === depth ? 'bg-secondary border-2 py-5' : ''}
+							className={
+								stockfishLevel === depth ? 'bg-secondary border-2 py-5' : ''
+							}
 							variant="outline"
-							
 							onClick={() => setStockfishLevel(depth)}
 						>
 							{level}
@@ -178,6 +193,10 @@ export const PlayVsComputer = () => {
 					onPieceDrop={onDrop}
 					boardWidth={boardSize}
 					boardOrientation={orientation}
+					customBoardStyle={customBoardStyle}
+					customDarkSquareStyle={customDarkSquareStyle}
+					customLightSquareStyle={customLightSquareStyle}
+					customPieces={customPieces}
 				/>
 			</div>
 		</div>

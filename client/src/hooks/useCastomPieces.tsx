@@ -16,13 +16,38 @@ const pieces = [
 	'bK',
 ];
 
+const boardTheme = {
+  brown: {
+    dark: '#B48764',
+    light: '#F0D8B6',
+  },
+  green: {
+    dark: '#779952',
+    light: '#edeed1',
+  }
+}
+
+const pieceTheme = {
+  l: 'l',
+  c: 'c'
+}
+
 const customBoardStyle={
   borderRadius: '4px',
   boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
 }
 
-const customDarkSquareStyle={ backgroundColor: '#779952' }
-const	customLightSquareStyle={ backgroundColor: '#edeed1' }
+let options = JSON.parse(localStorage.getItem('options')) || {
+  board: 'brown',
+  pieces: 'c'
+};
+
+const bg = boardTheme[options.board] || boardTheme[brown];
+const pc = pieceTheme[options.pieces] || pieceTheme['c']
+
+
+const customDarkSquareStyle={ backgroundColor: bg.dark } //#B48764  #779952
+const	customLightSquareStyle={ backgroundColor: bg.light }  //#F0D8B6 #edeed1
 
 export default function useCastomPieces() {
 	const customPieces = useMemo(() => {
@@ -33,7 +58,7 @@ export default function useCastomPieces() {
 					style={{
 						width: squareWidth,
 						height: squareWidth,
-						backgroundImage: `url(${CLIENT_URL}/${piece}.png)`,
+						backgroundImage: `url(${CLIENT_URL}/${pc}-${piece}.png)`,
 						backgroundSize: '100%',
 					}}
 				/>

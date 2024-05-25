@@ -3,7 +3,7 @@ const uuid = require('uuid');
 
 const ApiError = require('../exceptions/api-error');
 
-const { User } = require('../models/models');
+const { User, UserInfo } = require('../models/models');
 
 const mailService = require('./mail-service');
 const tokenService = require('./token-service');
@@ -73,9 +73,11 @@ class UserService {
 		if (user.isActivated) {
 			throw ApiError.BadRequest('Пользователь уже активирован');
 		}
-		
+
 		user.isActivated = true;
 		await user.save();
+
+		const userInfo = await UserInfo.create({ userId: user.id });
 
 		User.destroy({
 			where: {
@@ -94,19 +96,25 @@ class UserService {
 		});
 
 		if (!user) {
-			throw ApiError.BadRequest('Подтвержденный пользователь с таким email не найден');
+			throw ApiError.BadRequest(
+				'Подтвержденный пользователь с таким email не найден'
+			);
 		}
 
 		if (user.isBlocked) {
 			throw ApiError.BadRequest(`Пользователь ${user.login} заблокирован`);
 		}
 
-    const recoveryLink = uuid.v4();
+		const recoveryLink = uuid.v4();
 		user.recoveryLink = recoveryLink;
-    await user.save();
+		await user.save();
 
 		const sendRecoveryLink = `${process.env.CLIENT_URL}/newpass/${user.recoveryLink}`;
-		await mailService.sendRecoveryLink(user.email, sendRecoveryLink, user.login);
+		await mailService.sendRecoveryLink(
+			user.email,
+			sendRecoveryLink,
+			user.login
+		);
 
 		return { ok: true };
 	}
@@ -115,7 +123,7 @@ class UserService {
 		const user = await User.findOne({
 			where: {
 				recoveryLink,
-        isActivated: true,
+				isActivated: true,
 			},
 		});
 
@@ -159,7 +167,7 @@ class UserService {
 			email: user.email,
 			isActivated: user.isActivated,
 			login: user.login,
-      role: user.role,
+			role: user.role,
 		});
 
 		await tokenService.saveToken(user.id, refreshToken);
@@ -172,7 +180,9 @@ class UserService {
 				email: user.email,
 				isActivated: user.isActivated,
 				login: user.login,
-        role: user.role,
+				role: user.role,
+				isChatBlocked: user.isChatBlocked,
+				isPrivate: user.isPrivate,
 			},
 		};
 	}
@@ -200,7 +210,7 @@ class UserService {
 			email: user.email,
 			isActivated: user.isActivated,
 			login: user.login,
-      role: user.role,
+			role: user.role,
 		});
 
 		await tokenService.saveToken(user.id, tokens.refreshToken);
@@ -212,7 +222,9 @@ class UserService {
 				email: user.email,
 				isActivated: user.isActivated,
 				login: user.login,
-        role: user.role,
+				role: user.role,
+				isChatBlocked: user.isChatBlocked,
+				isPrivate: user.isPrivate,
 			},
 		};
 	}
@@ -234,6 +246,85 @@ class UserService {
 
 		return !user;
 	}
+
+	async getUserInfo(id) {
+		const user = await User.findOne({
+			where: { id },
+			include: UserInfo,
+		});
+
+		console.log(user);
+
+		if (!user) {
+			throw ApiError.BadRequest('Пользователь с таким id ненайден');
+		}
+
+		return {
+			id: user.id,
+			email: user.email,
+			login: user.login,
+			role: user.role,
+			isBlocked: user.isBlocked,
+			isChatBlocked: user.isChatBlocked,
+			isPrivate: user.isPrivate,
+			info: user.info,
+		};
+	}
+
+	async chageUserInfo(
+		userId,
+		name,
+		surname,
+		about,
+		rating,
+		isBlocked,
+		isChatBlocked,
+		isPrivate,
+    role
+	) {
+		const user = await User.findOne({ where: { id: userId } });
+		if (!user) {
+			throw ApiError.BadRequest('Пользователь с таким id ненайден');
+		}
+		const userInfo = await UserInfo.findOne({ where: { userId } });
+    user.isBlocked = isBlocked;
+    user.isChatBlocked = isChatBlocked;
+    user.isPrivate = isPrivate;
+    user.role = role;
+    await user.save();
+
+    userInfo.name = name;
+    userInfo.surname = surname;
+    userInfo.about = about;
+    userInfo.rating = rating;
+    await userInfo.save();
+    
+    return {
+			id: user.id,
+			email: user.email,
+			login: user.login,
+			role: user.role,
+			isBlocked: user.isBlocked,
+			isChatBlocked: user.isChatBlocked,
+			isPrivate: user.isPrivate,
+			info: userInfo,
+		};
+	}
+
+  async changePassword(userId, password, newPassword) {
+    const user = await User.findOne({ where: { id: userId } });
+
+    const isPasswordEquals = await bcrypt.compare(password, user.password);
+		if (!isPasswordEquals) {
+			throw ApiError.BadRequest('Неверный пароль');
+		}
+
+    const hashPassword = await bcrypt.hash(newPassword, 3);
+    user.password = hashPassword;
+    await user.save();
+
+    return 'ok';
+  }
 }
 
 module.exports = new UserService();

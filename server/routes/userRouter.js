@@ -9,25 +9,14 @@ router.get('/activate/:link', userController.activate);
 router.get('/refresh', userController.refresh);
 router.get('/users', authMiddleware, userController.getUsers);
 router.get('/isFreeLogin', userController.isFreeLogin);
+router.get('/info/:id', userController.getUserInfo);
 
 router.post('/registration', userController.registration);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 router.post('/recoverpass', userController.recoverPassword);
 router.post('/resetpass', userController.resetPassword);
-
-router.post('/test', (req, res) => {
-	console.log(req.cookies);
-	res.json({ reqCookies: req.cookies });
-});
-
-router.post('/setcookie', (req, res) => {
-	res.cookie('user', 'info', { maxAge: 30 * 24 * 60 * 1000, httpOnly: true }).json('Уставновил куки');
-});
-
-router.post('/getApiError', async (req, res, next) => {
-	const { login, email, password } = req.body;
-	next(ApiError.BadRequest('Пользователь с таким email уже существует'));
-});
+router.post('/changeInfo', userController.chageUserInfo);
+router.post('/changepass', userController.changePassword)
 
 module.exports = router;
