@@ -298,14 +298,7 @@ const Header = () => {
 							className="text-muted-foreground hover:text-foreground"
 						>
 							Анализ
-						</Link>
-
-						<Link
-							to={NEWS_ROUTE}
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Новости
-						</Link>
+						</Link>					
 
 						<Link
 							to={MATERIALS_ROUTE}

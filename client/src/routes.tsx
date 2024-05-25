@@ -1,4 +1,4 @@
-import { ANALYSIS_GAME_ROUT, ANALYSIS_ROUTE, COMPUTER_ROUTE, CREATENEWS_ROUTE, FINDGAME_ROUTE, HOME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, NEW_PASSWORD_ROUTE, ONE_NEWS_ROUTE, PLAYING_ROOM_ROUTE, PROFILE_ROUTE, RECOVERY_ROUTE, REGISTRATION_ROUTE, USERS_ROUTE } from "./lib/constants"
+import { ANALYSIS_GAME_ROUT, ANALYSIS_ROUTE, COMPUTER_ROUTE, CREATENEWS_ROUTE, FINDGAME_ROUTE, FINISHED_GAME_ROUTE, HOME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, NEW_PASSWORD_ROUTE, ONE_NEWS_ROUTE, PLAYING_ROOM_ROUTE, PROFILE_ROUTE, RECOVERY_ROUTE, REGISTRATION_ROUTE, USERS_ROUTE } from "./lib/constants"
 import AnalysisGamePage from "./pages/AnalysisGamePage"
 import AnalysisPage from "./pages/AnalysisPage"
 import ComputerGamePage from "./pages/ComputerGamePage"
@@ -6,6 +6,7 @@ import CreateNewsPage from "./pages/CreateNewsPage"
 import CreateRoomPage from "./pages/CreateRoomPage"
 import ErrorPage from "./pages/ErrorPage"
 import FindGamePage from "./pages/FindGamePage"
+import FinishedGamePage from "./pages/FinishedGamePage"
 import HomePage from "./pages/HomePage"
 import LoginPage from "./pages/LoginPage"
 import MaterialsPage from "./pages/MaterialsPage"
@@ -87,5 +88,9 @@ export const routes = [
   {
     path: USERS_ROUTE,
     element: <UsersPage />
+  },
+  {
+    path: FINISHED_GAME_ROUTE,
+    element: <FinishedGamePage />
   }
 ]

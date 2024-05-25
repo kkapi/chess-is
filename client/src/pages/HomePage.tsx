@@ -8,12 +8,23 @@ import { Button } from '@/components/ui/button';
 import {
 	BookMarked,
 	BrainCircuit,
+	CircleUserRound,
 	Cpu,
 	Newspaper,
+	ScrollText,
 	UserRoundSearch,
 	UsersRound,
 } from 'lucide-react';
-import { ANALYSIS_ROUTE, COMPUTER_ROUTE, FINDGAME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, REGISTRATION_ROUTE } from '@/lib/constants';
+import {
+	ANALYSIS_ROUTE,
+	COMPUTER_ROUTE,
+	FINDGAME_ROUTE,
+	LOGIN_ROUTE,
+	MATERIALS_ROUTE,
+	NEWROOM_ROUTE,
+	NEWS_ROUTE,
+	REGISTRATION_ROUTE,
+} from '@/lib/constants';
 import { useContext } from 'react';
 import { Context } from '@/main';
 import { observer } from 'mobx-react-lite';
@@ -75,49 +86,6 @@ const HomePage = () => {
 							</Button>
 						</div>
 					)}
-         {/*  <button className='border border-red-500' onClick={async () => {
-            try {
-              const response = await fetch('http://localhost:5000/user/setcookie', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({hi: 1}),
-              });
-          
-              if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-              }
-          
-              const result = await response.json();
-              console.log(result);
-            } catch (error) {
-              console.error('Ошибка при отправке POST-запроса:', error);
-            }
-          }}>SET COOKIE</button> */}
-{/*           <button className='border border-red-500' onClick={async () => {
-             try {
-              const response = await fetch('http://localhost:5000/user/test', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({hi: 1}),
-              });
-          
-              if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-              }
-          
-              const result = await response.json();
-              console.log(result);
-            } catch (error) {
-              console.error('Ошибка при отправке POST-запроса:', error);
-            }
-          }}>GET COOKIES</button> */}
-          
 				</section>
 
 				<Separator />
@@ -200,20 +168,26 @@ const HomePage = () => {
 						</CardContent>
 					</Card>
 					<Card
-						onClick={() => navigate(NEWS_ROUTE)}
+						onClick={() => {
+              if (store.isAuth) {
+                navigate(`/profile/${store.user?.id}`)
+              } else {
+                navigate(LOGIN_ROUTE)
+              }
+            }}
 						className="hover:cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
 					>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-2xl font-medium">Новости</CardTitle>
+							<CardTitle className="text-2xl font-medium">Просмотр партий</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-center gap-4">
 							<p className="text-sm text-muted-foreground w-5/6">
-								Здесь публикуются свежие новости, анонсы предстоящих турниров и
-								другая полезная информация для любителей этой игры. Вы можете не
-								только читать новости, но и делиться своими мыслями в
-								комментариях.
+								Зарегистрируйтесь в системе чтобы иметь доступ к завершенным
+								партиям. Получите возможность отправлять жалобы во время игры,
+								наша модерация рассмотрит все подозрительные случаи. Настройте
+								цвет доски и формат фигур в разделе персонализация.
 							</p>
-							<Newspaper className="w-1/6 h-auto" />
+							<ScrollText className="w-1/6 h-auto" />
 						</CardContent>
 					</Card>
 

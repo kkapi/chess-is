@@ -1,6 +1,6 @@
 import useCastomPieces from '@/hooks/useCastomPieces';
 import Engine from '@/stockfish/engine';
-import { Chess, validateFen } from 'chess.js';
+import { Chess } from 'chess.js';
 import { useEffect, useState, useMemo } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { Progress } from './ui/progress';
@@ -10,7 +10,6 @@ import {
 	Repeat2,
 	Clipboard,
 	RotateCcw,
-	Undo2,
 	ChevronsLeft,
 	ChevronLeft,
 	ChevronRight,
@@ -52,8 +51,6 @@ export const AnalysisGameBoard = () => {
 
 		return moves;
 	}
-
-	const arr = splitPGN('1. e4 e5 2. Qh5 Nc6 3. Bc4 Nf6 4. Qxf7#');
 
 	useEffect(() => {
 		if (width < 500) {
@@ -222,6 +219,7 @@ export const AnalysisGameBoard = () => {
 										game.deleteComments();
 										const moves = splitPGN(game.pgn());
 										setPgn(moves);
+                    setSelectedMove(moves.length - 1)
 										setChessBoardPosition(game.fen());
 									} catch (e) {
 										setError(true);

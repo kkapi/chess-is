@@ -157,6 +157,28 @@ class UserController {
       next(error)
     }
   }
+
+  async getUserGames(req, res, next) {
+    try {
+      const userId = req.params.id;
+      const games = await userService.getUserGame(userId);
+
+      res.json(games);
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getGameInfo(req, res, next) {
+    try {
+      const gameUuid = req.params.uuid;
+      const game = await userService.getGameInfo(gameUuid);
+
+      res.json(game);
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = new UserController();

@@ -36,8 +36,18 @@ const boardTheme = {
 };
 
 const pieceTheme = {
-	l: 'l',
-	c: 'c',
+	a: {
+		prefix: 'a',
+		type: '.svg',
+	},
+	c: {
+		prefix: 'c',
+		type: '.png',
+	},
+  n: {
+    prefix: 'n',
+    type: '.svg',
+  }
 };
 
 const customBoardStyle = {
@@ -51,8 +61,8 @@ export default function useCastomPieces() {
 		pieces: 'c',
 	};
 
-	const bg = boardTheme[options.board] || boardTheme[brown];
-	const pc = pieceTheme[options.pieces] || pieceTheme['c'];
+	const bg = boardTheme[options.board] || boardTheme.brown;
+	const pc = pieceTheme[options.pieces] || pieceTheme.c;
 
 	const customDarkSquareStyle = { backgroundColor: bg.dark };
 	const customLightSquareStyle = { backgroundColor: bg.light };
@@ -65,7 +75,7 @@ export default function useCastomPieces() {
 					style={{
 						width: squareWidth,
 						height: squareWidth,
-						backgroundImage: `url(${CLIENT_URL}/${pc}-${piece}.png)`,
+						backgroundImage: `url(${CLIENT_URL}/${pc.prefix}-${piece}${pc.type})`, //
 						backgroundSize: '100%',
 					}}
 				/>

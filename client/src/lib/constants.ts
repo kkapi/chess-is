@@ -13,7 +13,8 @@ export const NEWS_ROUTE = '/news';
 export const ONE_NEWS_ROUTE = '/news/:id'
 export const MATERIALS_ROUTE = '/materials ';
 export const PROFILE_ROUTE = '/profile/:id';
-export const ANALYSIS_GAME_ROUT = '/analyse_game'
+export const ANALYSIS_GAME_ROUT = '/analyse_game';
+export const FINISHED_GAME_ROUTE = '/games/:uuid'
 
 export const PLAYING_ROOM_ROUTE = '/play/:roomId';
 

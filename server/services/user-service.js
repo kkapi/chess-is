@@ -3,7 +3,8 @@ const uuid = require('uuid');
 
 const ApiError = require('../exceptions/api-error');
 
-const { User, UserInfo } = require('../models/models');
+const { User, UserInfo, Game } = require('../models/models');
+const { Op } = require('sequelize');
 
 const mailService = require('./mail-service');
 const tokenService = require('./token-service');
@@ -280,26 +281,26 @@ class UserService {
 		isBlocked,
 		isChatBlocked,
 		isPrivate,
-    role
+		role
 	) {
 		const user = await User.findOne({ where: { id: userId } });
 		if (!user) {
 			throw ApiError.BadRequest('Пользователь с таким id ненайден');
 		}
 		const userInfo = await UserInfo.findOne({ where: { userId } });
-    user.isBlocked = isBlocked;
-    user.isChatBlocked = isChatBlocked;
-    user.isPrivate = isPrivate;
-    user.role = role;
-    await user.save();
+		user.isBlocked = isBlocked;
+		user.isChatBlocked = isChatBlocked;
+		user.isPrivate = isPrivate;
+		user.role = role;
+		await user.save();
 
-    userInfo.name = name;
-    userInfo.surname = surname;
-    userInfo.about = about;
-    userInfo.rating = rating;
-    await userInfo.save();
-    
-    return {
+		userInfo.name = name;
+		userInfo.surname = surname;
+		userInfo.about = about;
+		userInfo.rating = rating;
+		await userInfo.save();
+
+		return {
 			id: user.id,
 			email: user.email,
 			login: user.login,
@@ -311,20 +312,56 @@ class UserService {
 		};
 	}
 
-  async changePassword(userId, password, newPassword) {
-    const user = await User.findOne({ where: { id: userId } });
+	async changePassword(userId, password, newPassword) {
+		const user = await User.findOne({ where: { id: userId } });
 
-    const isPasswordEquals = await bcrypt.compare(password, user.password);
+		const isPasswordEquals = await bcrypt.compare(password, user.password);
 		if (!isPasswordEquals) {
 			throw ApiError.BadRequest('Неверный пароль');
 		}
 
-    const hashPassword = await bcrypt.hash(newPassword, 3);
-    user.password = hashPassword;
-    await user.save();
+		const hashPassword = await bcrypt.hash(newPassword, 3);
+		user.password = hashPassword;
+		await user.save();
 
-    return 'ok';
-  }
+		return 'ok';
+	}
+
+	async getUserGame(userId) {
+		const games = await Game.findAll({
+			where: {
+				[Op.or]: [{ white: userId }, { black: userId }],
+			},
+		});
+
+		return games;
+	}
+
+	async getGameInfo(gameUuid) {
+		const game = await Game.findOne({
+      where: {
+        uuid: gameUuid,
+      },
+      include: [
+        {
+          model: User,
+          as: 'whitePlayer',
+          attributes: ['id', 'login', 'email'],
+        },
+        {
+          model: User,
+          as: 'blackPlayer',
+          attributes: ['id', 'login', 'email'],
+        },
+      ],
+    });
+
+		if (!game) {
+			throw ApiError.BadRequest('Игры с таким id не существует');
+		}
+
+		return game;
+	}
 }
 
 module.exports = new UserService();
