@@ -151,6 +151,7 @@ const Header = () => {
 
 											store.isAuth = false;
 											store.user = null;
+                      navigate(HOME_ROUTE);
 											console.log(result);
 										} catch (error) {
 											console.error('Ошибка при отправке POST-запроса:', error);

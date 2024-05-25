@@ -8,6 +8,7 @@ export type User = {
 	login: string;
 	email: string;
 	role: string;
+  isChatBlocked: boolean;
 };
 
 export default class Store {
