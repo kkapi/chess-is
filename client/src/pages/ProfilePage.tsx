@@ -185,26 +185,111 @@ const ProfilePage = () => {
 										<span className="text-center font-semibold text-2xl">
 											Редактировать
 										</span>
-										<ChangeInfoForm user={user} setUser={setUser} userId={Number(id)} />
+										<ChangeInfoForm
+											user={user}
+											setUser={setUser}
+											userId={Number(id)}
+										/>
 									</div>
 								</TabsContent>
 								<TabsContent value="password">
 									<div className="p-3 px-6 flex flex-col gap-4">
-                    <NewPasswordForm />
-                  </div>
+										<NewPasswordForm />
+									</div>
 								</TabsContent>
 								<TabsContent value="ui">
 									<div className="p-3 px-6 flex flex-col gap-4">
-										Персонализация
-                    <button onClick={() => {
-                      const options = JSON.parse(localStorage.getItem('options'))
-                      console.log(options);
-                    }}>click</button>
-                     <button onClick={() => {
-                      const options = JSON.parse(localStorage.getItem('options')) || {};
-                      options.board = 'brown',
-                      localStorage.setItem("options", JSON.stringify(options));
-                    }}>click</button>
+										<div className="text-2xl font-bold text-center">
+											Персонализация
+										</div>
+										Тут будет загрузка аватара
+										<Separator className="my-2" />
+										<div className="text-xl font-bold text-center">Доска</div>
+										<div className="flex justify-center items-center gap-5">
+											<div
+												className="w-[100px] h-[100px] grid grid-cols-2 cursor-pointer"
+												onClick={() => {
+													const options =
+														JSON.parse(localStorage.getItem('options')) || {};
+													(options.board = 'brown'),
+														localStorage.setItem(
+															'options',
+															JSON.stringify(options)
+														);
+												}}
+											>
+												<div className="w-[50px] h[50px] bg-[#B48764]"></div>
+												<div className="w-[50px] h[50px] bg-[#F0D8B6]"></div>
+												<div className="w-[50px] h[50px] bg-[#F0D8B6]"></div>
+												<div className="w-[50px] h[50px] bg-[#B48764]"></div>
+											</div>
+											<div
+												className="w-[100px] h-[100px] grid grid-cols-2 cursor-pointer"
+												onClick={() => {
+													const options =
+														JSON.parse(localStorage.getItem('options')) || {};
+													(options.board = 'green'),
+														localStorage.setItem(
+															'options',
+															JSON.stringify(options)
+														);
+												}}
+											>
+												<div className="w-[50px] h[50px] bg-[#779952]"></div>
+												<div className="w-[50px] h[50px] bg-[#edeed1]"></div>
+												<div className="w-[50px] h[50px] bg-[#edeed1]"></div>
+												<div className="w-[50px] h[50px] bg-[#779952]"></div>
+											</div>
+											<div
+												className="w-[100px] h-[100px] grid grid-cols-2 cursor-pointer"
+												onClick={() => {
+													const options =
+														JSON.parse(localStorage.getItem('options')) || {};
+													(options.board = 'purple'),
+														localStorage.setItem(
+															'options',
+															JSON.stringify(options)
+														);
+												}}
+											>
+												<div className="w-[50px] h[50px] bg-[#8467a5]"></div>
+												<div className="w-[50px] h[50px] bg-[#e4daf1]"></div>
+												<div className="w-[50px] h[50px] bg-[#e4daf1]"></div>
+												<div className="w-[50px] h[50px] bg-[#8467a5]"></div>
+											</div>
+											<div
+												className="w-[100px] h-[100px] grid grid-cols-2 cursor-pointer"
+												onClick={() => {
+													const options =
+														JSON.parse(localStorage.getItem('options')) || {};
+													(options.board = 'blue'),
+														localStorage.setItem(
+															'options',
+															JSON.stringify(options)
+														);
+												}}
+											>
+												<div className="w-[50px] h[50px] bg-[#5980b9]"></div>
+												<div className="w-[50px] h[50px] bg-[#cadaf3]"></div>
+												<div className="w-[50px] h[50px] bg-[#cadaf3]"></div>
+												<div className="w-[50px] h[50px] bg-[#5980b9]"></div>
+											</div>
+										</div>
+										<Separator className="my-2" />
+										<div className="text-xl font-bold text-center">Фигуры</div>
+										<button
+											onClick={() => {
+												const options =
+													JSON.parse(localStorage.getItem('options')) || {};
+												(options.board = 'brown'),
+													localStorage.setItem(
+														'options',
+														JSON.stringify(options)
+													);
+											}}
+										>
+											click
+										</button>
 									</div>
 								</TabsContent>
 							</Tabs>
