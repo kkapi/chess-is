@@ -100,7 +100,7 @@ export const PlayVsComputer = () => {
 		<div className="flex gap-1 md:gap-10 flex-col md:flex-row justify-center items-center">
 			<div className="border rounded-md  w-[400px] md:w-[500px] min-h-[200px] p-8 flex flex-col justify-center items-center gap-5">
 				<div className="font-bold text-2xl">
-					{resultMessage ? <>{resultMessage}</> : <>Игра против компьютера</>}
+					{resultMessage ? <>{resultMessage}</> : <span className='md:text-3xl text-center'>Игра против компьютера</span>}
 				</div>
 				<div className="flex gap-2 justify-center items-center">
 					{Object.entries(levels).map(([level, depth]) => (

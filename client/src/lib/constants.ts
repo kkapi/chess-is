@@ -13,12 +13,13 @@ export const NEWS_ROUTE = '/news';
 export const ONE_NEWS_ROUTE = '/news/:id'
 export const MATERIALS_ROUTE = '/materials ';
 export const PROFILE_ROUTE = '/profile/:id';
+export const ANALYSIS_GAME_ROUT = '/analyse_game'
 
 export const PLAYING_ROOM_ROUTE = '/play/:roomId';
 
 export const CREATENEWS_ROUTE = '/createnews';
 
-export const USERS_ROUTE = '/users';
+export const USERS_ROUTE = '/admin/users';
 
 export const CLIENT_URL = 'http://localhost:5173'
 
