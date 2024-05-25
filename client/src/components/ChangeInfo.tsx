@@ -67,7 +67,8 @@ const ChangeInfoForm = ({ user, userId, setUser }) => {
       rating: Number(data.rating),
       isBlocked: data.isBlocked,
       isChatBlocked: data.isChatBlocked,
-      isPrivate: data.isPrivate
+      isPrivate: data.isPrivate,
+      role: data.role
     })
 
 		console.log(response.data)

@@ -1,9 +1,20 @@
 import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import useCastomPieces from '@/hooks/useCastomPieces';
 import useWindowDimensions from '@/hooks/useWindowDimensions ';
 import { $api } from '@/http';
+import { login } from '@/http/userAPI';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { ANALYSIS_GAME_ROUT } from '@/lib/constants';
+import socket from '@/socket/socket';
 import { Chess } from 'chess.js';
 import {
 	Repeat2,
@@ -37,7 +48,7 @@ const FinishedGamePage = () => {
 	const game = useMemo(() => new Chess(), []);
 	const { uuid } = useParams();
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	const [chessBoardPosition, setChessBoardPosition] = useState(game.fen());
 
@@ -104,6 +115,14 @@ const FinishedGamePage = () => {
 		return true;
 	}
 
+	function getMesClass(mes) {
+		if (mes.color === 'w') {
+			return 'ml-6 bg-muted-foreground text-background p-1 pr-3 pl-3 rounded-md self-end mb-1';
+		} else {
+			return 'bg-secondary p-1 rounded-md mr-6 pr-3 pl-3 self-start mb-1';
+		}
+	}
+
 	const {
 		customBoardStyle,
 		customDarkSquareStyle,
@@ -125,12 +144,18 @@ const FinishedGamePage = () => {
 							<div className="font-bold  text-xl md:text-4xl">
 								<span>Завершенная партия</span>
 							</div>
-              <div className='text-base font-semibold'>{gameInfo?.resultMessage}</div>
-              <div className='text-base font-semibold'>{formatDateTime(gameInfo?.createdAt)}</div>
+							<div className="text-base font-semibold">
+								{gameInfo?.resultMessage}
+							</div>
+							<div className="text-base font-semibold">
+								{formatDateTime(gameInfo?.createdAt)}
+							</div>
 							<div className="text-lg">
-								Черные фигруры:{' '}
+								Белые фигруры:{' '}
 								{gameInfo?.whitePlayer ? (
-									<span className="font-bold cursor-pointer hover:underline">
+									<span className="font-bold cursor-pointer hover:underline" onClick={() => {
+                    navigate(`/profile/${gameInfo?.whitePlayer?.id}`);
+                  }}>
 										{gameInfo?.whitePlayer?.login}
 									</span>
 								) : (
@@ -140,9 +165,12 @@ const FinishedGamePage = () => {
 							<div className="text-lg">
 								Черные фигруры:{' '}
 								{gameInfo?.blackPlayer ? (
-									<span className="font-bold cursor-pointer hover:underline" onClick={() => {
-                    navigate(`/profile/${gameInfo?.blackPlayer?.id}`)
-                  }}>
+									<span
+										className="font-bold cursor-pointer hover:underline"
+										onClick={() => {
+											navigate(`/profile/${gameInfo?.blackPlayer?.id}`);
+										}}
+									>
 										{gameInfo?.blackPlayer?.login}
 									</span>
 								) : (
@@ -203,6 +231,50 @@ const FinishedGamePage = () => {
 										</Link>
 									</div>
 								</div>
+								<Card className="w-[350px] md:w-[370px] h-[200px] mt-4">
+									<CardHeader className="text-center">
+										<CardTitle>История чата</CardTitle>
+									</CardHeader>
+									<CardContent>
+										<Card className="h-[100px] overflow-y-auto overflow-x-hidden p-5 flex flex-col gap-2 justify-start w-full whitespace-pre-wrap">
+											{gameInfo?.messages?.length && <>
+												{JSON.parse(gameInfo?.messages)?.map((mes, i) => {
+													if (mes?.type === 'info') {
+														return (
+															<div
+																key={i}
+																className="bg-secondary p-1 rounded-md pr-3 pl-3 self-start mb-1 border border-foreground"
+															>
+																<div className="text-xs">
+																	{mes?.login}{' '}
+																	{new Date(mes?.time)
+																		.toLocaleTimeString()
+																		.split(':')
+																		.slice(0, 2)
+																		.join(':')}
+																</div>
+																<div className="text-xs">{mes?.message}</div>
+															</div>
+														);
+													}
+													return (
+														<div key={i} className={getMesClass(mes)}>
+															<div className="text-xs">
+																{mes?.login}{' '}
+																{new Date(mes?.time)
+																	.toLocaleTimeString()
+																	.split(':')
+																	.slice(0, 2)
+																	.join(':')}
+															</div>
+															<div>{mes?.message}</div>
+														</div>
+													);
+												})}
+											</>}
+										</Card>
+									</CardContent>
+								</Card>
 							</div>
 						</div>
 						<div

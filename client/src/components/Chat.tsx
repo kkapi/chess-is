@@ -9,12 +9,15 @@ import {
 	CardTitle,
 } from './ui/card';
 import { Input } from './ui/input';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import socket from '@/socket/socket';
+import { Context } from '@/main';
 
 const Chat = ({ roomId, messages, setMessages, color, login }) => {
 	const [message, setMessage] = useState('');
 	const chatRef = useRef();
+
+	const { store } = useContext(Context);
 
 	useEffect(() => {
 		socket.on('message', data => {
@@ -60,7 +63,7 @@ const Chat = ({ roomId, messages, setMessages, color, login }) => {
 											.slice(0, 2)
 											.join(':')}
 									</div>
-									<div className='text-xs'>{mes?.message}</div>
+									<div className="text-xs">{mes?.message}</div>
 								</div>
 							);
 						}
@@ -100,13 +103,18 @@ const Chat = ({ roomId, messages, setMessages, color, login }) => {
 					}}
 				>
 					<Input
-						placeholder="Введите ваше сообщение"
+						placeholder={
+							store?.user?.isChatBlocked
+								? 'Чат заблокирован'
+								: 'Введите ваше сообщение'
+						}
 						type="text"
 						className="w-full"
 						value={message}
 						onChange={e => setMessage(e.target.value)}
+						disabled={store?.user?.isChatBlocked}
 					></Input>
-					<Button variant="secondary" size="icon" type="submit">
+					<Button variant="secondary" size="icon" type="submit" disabled={store?.user?.isChatBlocked}>
 						<ChevronRight className="h-4 w-4" />
 					</Button>
 				</form>
