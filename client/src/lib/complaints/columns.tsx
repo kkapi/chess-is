@@ -1,8 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import HoverUser from './HoverUser';
 import { Badge } from '@/components/ui/badge';
-
-import { MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -72,7 +71,17 @@ function getRusReason(reason: string) {
 export const columns: ColumnDef<Complaint>[] = [
 	{
 		accessorKey: 'id',
-		header: 'ID',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					ID
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			);
+		},
 	},
 	{
 		accessorKey: 'reason',
@@ -117,10 +126,26 @@ export const columns: ColumnDef<Complaint>[] = [
 
 			return <Badge className="text-sm">Не рассмотрена</Badge>;
 		},
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue) {
+        return !row.getValue("isReviewed");
+      }
+      return true;// true or false based on your custom logic
+    },
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Дата',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Дата
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			);
+		},
 		cell: ({ row }) => {
 			const date = row.getValue('createdAt') as string;
 
@@ -179,9 +204,9 @@ export const columns: ColumnDef<Complaint>[] = [
 						review={complaint.review}
 						decisionVisible={decisionVisible}
 						setDecisionVisible={setDecisionVisible}
-            applicantUser={complaint.applicantUser}
-            defendantUser={complaint.defendantUser}
-            reviewerUser={complaint.reviewerUser}
+						applicantUser={complaint.applicantUser}
+						defendantUser={complaint.defendantUser}
+						reviewerUser={complaint.reviewerUser}
 					/>
 				</>
 			);

@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { ModeToggle } from './ModeToggle';
 import {
 	ANALYSIS_ROUTE,
+	COMPLAINTS_ROUTE,
 	COMPUTER_ROUTE,
 	FINDGAME_ROUTE,
 	HOME_ROUTE,
@@ -13,7 +14,7 @@ import {
 	NEWROOM_ROUTE,
 	NEWS_ROUTE,
 	REGISTRATION_ROUTE,
-  USERS_ROUTE,
+	USERS_ROUTE,
 } from '@/lib/constants';
 import { useContext } from 'react';
 import { Context } from '@/main';
@@ -127,9 +128,25 @@ const Header = () => {
 										Профиль
 									</DropdownMenuItem>
 									{store.user?.role === 'ADMIN' && (
-										<DropdownMenuItem onClick={() => navigate(`/admin/users`)}>
-											Пользователи ᴬ
-										</DropdownMenuItem>
+										<>
+											<DropdownMenuItem onClick={() => navigate(USERS_ROUTE)}>
+												Пользователи ᴬ
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => navigate(COMPLAINTS_ROUTE)}
+											>
+												Жалобы ᴬ
+											</DropdownMenuItem>
+										</>
+									)}
+									{store.user?.role === 'MODERATOR' && (
+										<>
+											<DropdownMenuItem
+												onClick={() => navigate(COMPLAINTS_ROUTE)}
+											>
+												Жалобы ᴹ
+											</DropdownMenuItem>
+										</>
 									)}
 								</>
 							) : (
@@ -321,6 +338,23 @@ const Header = () => {
 									className="text-muted-foreground hover:text-foreground"
 								>
 									Список пользователей ᴬ
+								</Link>
+								<Link
+									to={USERS_ROUTE}
+									className="text-muted-foreground hover:text-foreground"
+								>
+									Список жалоб ᴬ
+								</Link>
+							</>
+						)}
+						{store.user?.role === 'MODERATOR' && (
+							<>
+								<Separator />
+								<Link
+									to={COMPLAINTS_ROUTE}
+									className="text-muted-foreground hover:text-foreground"
+								>
+									Список жалоб ᴹ
 								</Link>
 							</>
 						)}

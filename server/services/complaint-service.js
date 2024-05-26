@@ -4,7 +4,7 @@ class ComplaintService {
 	async createComplaint(gameUuid, applicant, defendant, reason, description) {
 		defendant = !isNaN(defendant) ? defendant : null;
 
-		const complaint = Complaint.create({
+		const complaint = await Complaint.create({
 			gameUuid,
 			applicant,
 			defendant,
@@ -57,10 +57,11 @@ class ComplaintService {
 		const complaint = await Complaint.findOne({
 			where: {
 				id: complaintId,
+        isReviewed: false
 			},
 		});
 
-		if (!complaint || complaint.isReviewd) {
+		if (!complaint) {
 			return;
 		}
 

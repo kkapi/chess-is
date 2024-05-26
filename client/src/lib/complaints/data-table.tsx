@@ -4,6 +4,10 @@ import {
 	getCoreRowModel,
 	useReactTable,
 	getPaginationRowModel,
+	SortingState,
+	getSortedRowModel,
+	ColumnFiltersState,
+	getFilteredRowModel,
 } from '@tanstack/react-table';
 
 import {
@@ -16,6 +20,12 @@ import {
 } from '@/components/ui/table';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -26,15 +36,43 @@ export function DataTable<TData, TValue>({
 	columns,
 	data,
 }: DataTableProps<TData, TValue>) {
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
+		onSortingChange: setSorting,
+		getSortedRowModel: getSortedRowModel(),
+		onColumnFiltersChange: setColumnFilters,
+		getFilteredRowModel: getFilteredRowModel(),
+		state: {
+			sorting,
+			columnFilters,
+		},
 	});
+
+	const [val, setVal] = useState(false);
+
+	function toggle() {
+		setVal(prev => {
+			table.getColumn('isReviewed')?.setFilterValue(!prev);
+			return !prev;
+		});
+	}
 
 	return (
 		<div>
+			<div className="flex items-center py-4">
+				<div className="flex items-center space-x-4">
+					<Label htmlFor="airplane-mode" className='text-base'>
+						Показывать только нерассмотренные жалобы
+					</Label>
+					<Switch id="airplane-mode" checked={val} onCheckedChange={toggle} />
+				</div>
+			</div>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
@@ -92,7 +130,7 @@ export function DataTable<TData, TValue>({
 					onClick={() => table.previousPage()}
 					disabled={!table.getCanPreviousPage()}
 				>
-					Previous
+					Предыдущая
 				</Button>
 				<Button
 					variant="outline"
@@ -100,7 +138,7 @@ export function DataTable<TData, TValue>({
 					onClick={() => table.nextPage()}
 					disabled={!table.getCanNextPage()}
 				>
-					Next
+					Следующая
 				</Button>
 			</div>
 		</div>
