@@ -340,7 +340,7 @@ const Header = () => {
 									Список пользователей ᴬ
 								</Link>
 								<Link
-									to={USERS_ROUTE}
+									to={COMPLAINTS_ROUTE}
 									className="text-muted-foreground hover:text-foreground"
 								>
 									Список жалоб ᴬ

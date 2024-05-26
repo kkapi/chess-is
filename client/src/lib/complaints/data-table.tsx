@@ -20,10 +20,9 @@ import {
 } from '@/components/ui/table';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 import { useState } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -67,7 +66,7 @@ export function DataTable<TData, TValue>({
 		<div>
 			<div className="flex items-center py-4">
 				<div className="flex items-center space-x-4">
-					<Label htmlFor="airplane-mode" className='text-base'>
+					<Label htmlFor="airplane-mode" className="text-base">
 						Показывать только нерассмотренные жалобы
 					</Label>
 					<Switch id="airplane-mode" checked={val} onCheckedChange={toggle} />

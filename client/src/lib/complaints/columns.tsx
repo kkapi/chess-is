@@ -15,6 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Decision from '@/components/Decision';
 import { useState } from 'react';
+import DecisionForm from '@/components/DecisionForm';
 
 export type UserInfo = {
 	id: number;
@@ -126,12 +127,12 @@ export const columns: ColumnDef<Complaint>[] = [
 
 			return <Badge className="text-sm">Не рассмотрена</Badge>;
 		},
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue) {
-        return !row.getValue("isReviewed");
-      }
-      return true;// true or false based on your custom logic
-    },
+		filterFn: (row, columnId, filterValue) => {
+			if (filterValue) {
+				return !row.getValue('isReviewed');
+			}
+			return true; // true or false based on your custom logic
+		},
 	},
 	{
 		accessorKey: 'createdAt',
@@ -159,6 +160,7 @@ export const columns: ColumnDef<Complaint>[] = [
 
 			const navigate = useNavigate();
 			const [decisionVisible, setDecisionVisible] = useState(false);
+			const [decisionFormVisible, setDecisionFormVisible] = useState(false);
 
 			return (
 				<>
@@ -196,7 +198,7 @@ export const columns: ColumnDef<Complaint>[] = [
 									Результат рассмотрения
 								</DropdownMenuItem>
 							) : (
-								<DropdownMenuItem>Рассмотреть жалобу</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setDecisionFormVisible(true)}>Рассмотреть жалобу</DropdownMenuItem>
 							)}
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -207,6 +209,12 @@ export const columns: ColumnDef<Complaint>[] = [
 						applicantUser={complaint.applicantUser}
 						defendantUser={complaint.defendantUser}
 						reviewerUser={complaint.reviewerUser}
+					/>
+					<DecisionForm
+            complaint={complaint}
+						decisionFormVisible={decisionFormVisible}
+						setDecisionFormVisible={setDecisionFormVisible}
+            defendantUser={complaint.defendantUser}
 					/>
 				</>
 			);

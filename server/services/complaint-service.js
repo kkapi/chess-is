@@ -53,11 +53,11 @@ class ComplaintService {
 		return complaints;
 	}
 
-	async addReview(userId, complaintId, result, description) {
+	async addReview(userId, complaintId, result, description, defendantId) {
 		const complaint = await Complaint.findOne({
 			where: {
 				id: complaintId,
-        isReviewed: false
+				isReviewed: false,
 			},
 		});
 
@@ -71,6 +71,28 @@ class ComplaintService {
 			userId,
 			complaintId: complaint.id,
 		});
+
+    if (result === 'BAN') {
+      await User.update(
+        { isBlocked: true },
+        {
+          where: {
+            id: defendantId,
+          },
+        }
+      );
+    }
+    
+    if (result === 'CHAT') {
+      await User.update(
+        { isChatBlocked: true },
+        {
+          where: {
+            id: defendantId,
+          },
+        }
+      );
+    }
 
 		complaint.isReviewed = true;
 		complaint.reviewer = userId;

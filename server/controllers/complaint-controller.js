@@ -27,8 +27,8 @@ class ComplaintController {
 	}
 
 	async addReview(req, res, next) {
-		const { userId, complaintId, result, description } = req.body;
-    await complaintService.addReview(userId, complaintId, result, description);
+		const { userId, complaintId, result, description, defendantId } = req.body;
+    await complaintService.addReview(userId, complaintId, result, description, defendantId);
 
     res.json('ok');
 	}

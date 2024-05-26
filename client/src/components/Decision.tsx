@@ -3,17 +3,34 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+
 import { Dispatch, SetStateAction } from 'react';
 import { getRusRole } from '@/lib/users-1/columns';
 import { Separator } from './ui/separator';
 import { useNavigate } from 'react-router-dom';
+
+function getResult(res:string | undefined) :string {
+  if (res === 'BAN') return "Пользователь заблокирован"
+  if (res === 'CHAT') return "Чат заблокирован"
+  return "Жалоба проигнорирована"
+}
+
+function formatDateTime(isoString: string | undefined) {
+	const date = new Date(isoString);
+
+	const options = {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+	};
+
+	return date.toLocaleString('ru-RU', options);
+}
 
 const Decision = ({
 	reviewerUser,
@@ -30,8 +47,7 @@ const Decision = ({
 	decisionVisible: boolean;
 	setDecisionVisible: Dispatch<SetStateAction<boolean>>;
 }) => {
-
-  const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	return (
 		<Dialog open={decisionVisible} onOpenChange={setDecisionVisible}>
@@ -40,16 +56,21 @@ const Decision = ({
 					<DialogTitle className="text-xl">
 						Результат рассмотрения жалобы # {review?.complaintId}
 					</DialogTitle>
-					<Separator className='my-3' />
+					<Separator className="my-3" />
 					<DialogDescription className="text-lg">
 						<div className="text-foreground">
-							<div>Результат: {review?.result}</div>
+							<div>Результат: {getResult(review?.result)}</div>
 							<div>Комментарий: {review?.description}</div>
-							<div>Дата: {review?.createdAt}</div>
+							<div>Дата: {formatDateTime(review?.createdAt)}</div>
 						</div>
-            <Separator className='my-3'/>
-						<div className="flex flex-col text-sm cursor-pointer" onClick={() => navigate(`/profile/${review?.id}`)}>
-              <div className='text-base text-foreground font-semibold'>Проверяющий</div>
+						<Separator className="my-3" />
+						<div
+							className="flex flex-col text-sm cursor-pointer"
+							onClick={() => navigate(`/profile/${review?.id}`)}
+						>
+							<div className="text-base text-foreground font-semibold">
+								Проверяющий
+							</div>
 							<div>ID: {reviewerUser?.id}</div>
 							<div>Логин: {reviewerUser?.login}</div>
 							<div>Почта: {reviewerUser?.email}</div>
@@ -57,9 +78,14 @@ const Decision = ({
 								Роль: {getRusRole(reviewerUser?.role)}
 							</div>
 						</div>
-            <Separator className='my-3'/>
-						<div className="flex flex-col text-sm cursor-pointer" onClick={() => navigate(`/profile/${applicantUser?.id}`)}>
-              <div className='text-base text-foreground font-semibold'>Отправитель</div>  
+						<Separator className="my-3" />
+						<div
+							className="flex flex-col text-sm cursor-pointer"
+							onClick={() => navigate(`/profile/${applicantUser?.id}`)}
+						>
+							<div className="text-base text-foreground font-semibold">
+								Отправитель
+							</div>
 							<div>ID: {applicantUser?.id}</div>
 							<div>Логин: {applicantUser?.login}</div>
 							<div>Почта: {applicantUser?.email}</div>
@@ -67,9 +93,14 @@ const Decision = ({
 								Роль: {getRusRole(applicantUser?.role)}
 							</div>
 						</div>
-            <Separator className='my-3'/>
-						<div className="flex flex-col text-sm cursor-pointer" onClick={() => navigate(`/profile/${defendantUser?.id}`)}>
-              <div className='text-base text-foreground font-semibold'>Обвиняемый</div>
+						<Separator className="my-3" />
+						<div
+							className="flex flex-col text-sm cursor-pointer"
+							onClick={() => navigate(`/profile/${defendantUser?.id}`)}
+						>
+							<div className="text-base text-foreground font-semibold">
+								Обвиняемый
+							</div>
 							<div>ID: {defendantUser?.id}</div>
 							<div>Логин: {defendantUser?.login}</div>
 							<div>Почта: {defendantUser?.email}</div>
