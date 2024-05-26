@@ -7,7 +7,7 @@ const router = new Router();
 
 router.get('/activate/:link', userController.activate);
 router.get('/refresh', userController.refresh);
-router.get('/users', authMiddleware, userController.getUsers);
+router.get('/users', userController.getUsers); // authMiddleware
 router.get('/isFreeLogin', userController.isFreeLogin);
 router.get('/info/:id', userController.getUserInfo);
 router.get('/games/:id', userController.getUserGames);

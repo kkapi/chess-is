@@ -1,14 +1,16 @@
 import {
 	ColumnDef,
+	ColumnFiltersState,
+	getFilteredRowModel,
+	SortingState,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 	getPaginationRowModel,
-	SortingState,
 	getSortedRowModel,
-	ColumnFiltersState,
-	getFilteredRowModel,
 } from '@tanstack/react-table';
+
+import * as React from 'react';
 
 import {
 	Table,
@@ -18,17 +20,13 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 }
-
-import * as React from 'react';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { DataTablePagination } from '@/components/DataTablePagination';
 
 export function DataTable<TData, TValue>({
 	columns,
@@ -55,10 +53,10 @@ export function DataTable<TData, TValue>({
 	});
 
 	return (
-		<div className='w-full'>
+		<div>
 			<div className="flex items-center py-4">
 				<Input
-					placeholder="Filter emails..."
+					placeholder="Поиск по логину..."
 					value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
 					onChange={event =>
 						table.getColumn('email')?.setFilterValue(event.target.value)
@@ -109,15 +107,31 @@ export function DataTable<TData, TValue>({
 									colSpan={columns.length}
 									className="h-24 text-center"
 								>
-									No results.
+									Нет подходящих результатов.
 								</TableCell>
 							</TableRow>
 						)}
 					</TableBody>
 				</Table>
 			</div>
-      <DataTablePagination table={table}/>
-			
+			<div className="flex items-center justify-end space-x-2 py-4">
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => table.previousPage()}
+					disabled={!table.getCanPreviousPage()}
+				>
+					Предыдущая
+				</Button>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => table.nextPage()}
+					disabled={!table.getCanNextPage()}
+				>
+					Следующая
+				</Button>
+			</div>
 		</div>
 	);
 }

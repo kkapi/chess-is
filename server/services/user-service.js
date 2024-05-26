@@ -232,7 +232,10 @@ class UserService {
 
 	async getAllUsers() {
 		const users = await User.findAll({
-			attributes: ['email', 'role', 'isActivated', 'login'],
+      where: {
+        isActivated: true,
+      },
+			attributes: ['id','email', 'role', 'isBlocked', 'isChatBlocked', 'isPrivate', 'login', 'createdAt'],
 		});
 		return users;
 	}
@@ -332,6 +335,7 @@ class UserService {
 			where: {
 				[Op.or]: [{ white: userId }, { black: userId }],
 			},
+      order: [['createdAt', 'DESC']],
 		});
 
 		return games;
