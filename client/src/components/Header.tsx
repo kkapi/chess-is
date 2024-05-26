@@ -43,7 +43,7 @@ const Header = () => {
 					<Crown className="w-8 h-8 mr-1" />
 					<span>Шахматы</span>
 				</Link>
-        {/* <Button onClick={() => {
+				{/* <Button onClick={() => {
           socket.emit('print_rooms')
         }}>
           PRINT ROOMS
@@ -125,12 +125,20 @@ const Header = () => {
 									>
 										Профиль
 									</DropdownMenuItem>
+									{store.user?.role === 'ADMIN' && (
+										<DropdownMenuItem
+											onClick={() => navigate(`/admin/users`)}
+										>
+											Пользователи ᴬ
+										</DropdownMenuItem>
+									)}
 								</>
 							) : (
 								<DropdownMenuLabel>Посетитель</DropdownMenuLabel>
-							)}							
+							)}
 
 							<DropdownMenuSeparator />
+
 							{store.isAuth ? (
 								<DropdownMenuItem
 									onClick={async () => {
@@ -151,7 +159,7 @@ const Header = () => {
 
 											store.isAuth = false;
 											store.user = null;
-                      navigate(HOME_ROUTE);
+											navigate(HOME_ROUTE);
 											console.log(result);
 										} catch (error) {
 											console.error('Ошибка при отправке POST-запроса:', error);
@@ -224,8 +232,9 @@ const Header = () => {
 									>
 										Профиль
 									</Link>
+
 									<span
-                    className='text-base underline'
+										className="text-base underline"
 										onClick={async () => {
 											try {
 												const response = await fetch(
@@ -244,7 +253,6 @@ const Header = () => {
 
 												store.isAuth = false;
 												store.user = null;
-												
 											} catch (error) {
 												console.error(
 													'Ошибка при отправке POST-запроса:',
@@ -298,7 +306,7 @@ const Header = () => {
 							className="text-muted-foreground hover:text-foreground"
 						>
 							Анализ
-						</Link>					
+						</Link>
 
 						<Link
 							to={MATERIALS_ROUTE}
