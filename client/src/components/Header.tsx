@@ -13,6 +13,7 @@ import {
 	NEWROOM_ROUTE,
 	NEWS_ROUTE,
 	REGISTRATION_ROUTE,
+  USERS_ROUTE,
 } from '@/lib/constants';
 import { useContext } from 'react';
 import { Context } from '@/main';
@@ -126,9 +127,7 @@ const Header = () => {
 										Профиль
 									</DropdownMenuItem>
 									{store.user?.role === 'ADMIN' && (
-										<DropdownMenuItem
-											onClick={() => navigate(`/admin/users`)}
-										>
+										<DropdownMenuItem onClick={() => navigate(`/admin/users`)}>
 											Пользователи ᴬ
 										</DropdownMenuItem>
 									)}
@@ -314,6 +313,17 @@ const Header = () => {
 						>
 							Материалы
 						</Link>
+						{store.user?.role === 'ADMIN' && (
+							<>
+								<Separator />
+								<Link
+									to={USERS_ROUTE}
+									className="text-muted-foreground hover:text-foreground"
+								>
+									Список пользователей ᴬ
+								</Link>
+							</>
+						)}
 					</nav>
 				</SheetContent>
 			</Sheet>
