@@ -22,11 +22,11 @@ class ComplaintService {
 			},
 			include: [
 				{ model: Review, as: 'review' },
-        {
-          model: User,
-          as: 'reviewerUser',
-          attributes: ['id', 'email', 'role', 'login'],
-        },
+				{
+					model: User,
+					as: 'reviewerUser',
+					attributes: ['id', 'email', 'role', 'login'],
+				},
 				{
 					model: User,
 					as: 'applicantUser',
@@ -38,33 +38,45 @@ class ComplaintService {
 					attributes: ['id', 'email', 'role', 'login'],
 				},
 			],
+			attributes: [
+				'id',
+				'gameUuid',
+				'reason',
+				'description',
+				'isReviewed',
+				'isGameEnded',
+				'createdAt',
+			],
+			order: [['id', 'ASC']],
 		});
 
 		return complaints;
 	}
 
-  async addReview(userId, complaintId, result, description) {
-    const complaint = await Complaint.findOne({where: {
-      id: complaintId,
-    }})
+	async addReview(userId, complaintId, result, description) {
+		const complaint = await Complaint.findOne({
+			where: {
+				id: complaintId,
+			},
+		});
 
-    if (!complaint || complaint.isReviewd) {
-      return;
-    }
+		if (!complaint || complaint.isReviewd) {
+			return;
+		}
 
-    const review = await Review.create({
-      result,
-      description,
-      userId,
-      complaintId: complaint.id,
-    })
+		const review = await Review.create({
+			result,
+			description,
+			userId,
+			complaintId: complaint.id,
+		});
 
-    complaint.isReviewed = true;
-    complaint.reviewer = userId;
-    await complaint.save();
+		complaint.isReviewed = true;
+		complaint.reviewer = userId;
+		await complaint.save();
 
-    return review.id;
-  }
+		return review.id;
+	}
 }
 
 module.exports = new ComplaintService();

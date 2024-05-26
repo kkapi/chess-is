@@ -1,23 +1,13 @@
 import { useEffect, useState } from 'react';
 import { User, columns } from './columns';
 import { DataTable } from './data-table';
+import { $authApi } from '@/http';
 
 async function getData(): Promise<User[]> {
 	// Fetch data from your API here.
-	return [
-		{
-			id: 1,
-			email: 'hzg2fik_j8@mail.ru',
-			role: 'ADMIN',
-			isBlocked: false,
-			isChatBlocked: true,
-			isPrivate: true,
-			login: 'kkapi',
-			createdAt: '2024-05-25T11:49:13.902Z',
-		},
 
-		// ...
-	];
+  const response = await $authApi.get('/user/users');
+	return response.data;
 }
 
 export default function UsersTable() {

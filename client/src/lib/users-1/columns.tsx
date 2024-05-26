@@ -15,13 +15,13 @@ export type User = {
 	isPrivate: boolean;
 };
 
-function getRusRole(role: string): string {
+export function getRusRole(role: string | undefined): string {
 	if (role === 'ADMIN') return 'Администратор';
 	if (role === 'MODERATOR') return 'Модератор';
 	return 'Пользователь';
 }
 
-function getDate(dateString: string): string {
+export function getDate(dateString: string): string {
 	const date = new Date(dateString);
 
 	const options = {
@@ -34,7 +34,7 @@ function getDate(dateString: string): string {
 	return formattedDate;
 }
 
-function StatusBadge({ status }: { status: boolean }) {
+export function StatusBadge({ status }: { status: boolean }) {
 	if (status) {
 		return <Badge className="text-sm">Заблокирован</Badge>;
 	}

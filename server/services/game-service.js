@@ -14,25 +14,14 @@ class GameService {
 		white = !isNaN(white) ? white : null;
 		black = !isNaN(black) ? black : null;
 
-		console.log({
-			uuid,
-			white,
-			black,
-			resultMessage,
-			messages,
-			pgn,
-			time,
-			type,
-		});
-
 		await Complaint.update(
-      { isGameEnded: true },
-      {
-        where: {
-          gameUuid: uuid,
-        },
-      }
-    );
+			{ isGameEnded: true },
+			{
+				where: {
+					gameUuid: uuid,
+				},
+			}
+		);
 
 		const game = await Game.create({
 			uuid,

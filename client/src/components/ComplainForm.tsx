@@ -43,20 +43,28 @@ const ComplainForm = ({ setOpen, roomInfo, playerType }) => {
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		console.log({ data, roomInfo, playerType, user: store.user && {
-      email: store.user.email,
-      id: store.user.id,
-      login: store.user.login,
-      role: store.user.role,
-    } });
+		console.log({
+			data,
+			roomInfo,
+			playerType,
+			user: store.user && {
+				email: store.user.email,
+				id: store.user.id,
+				login: store.user.login,
+				role: store.user.role,
+			},
+		});
 
-    const response = $authApi.post('/complaint/new', {
-      gameUuid: roomInfo?.id,
-      applicant: store?.user?.id,
-      defendant: roomInfo?.white?.userId === store?.user?.id ? roomInfo?.black?.userId : roomInfo?.white?.userId,
-      reason: data.reason,
-      description: data.description
-    });
+		const response = $authApi.post('/complaint/new', {
+			gameUuid: roomInfo?.id,
+			applicant: store?.user?.id,
+			defendant:
+				roomInfo?.white?.userId === store?.user?.id
+					? roomInfo?.black?.userId
+					: roomInfo?.white?.userId,
+			reason: data.reason,
+			description: data.description,
+		});
 
 		setOpen(false);
 	}

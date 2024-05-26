@@ -2,6 +2,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { Context } from '@/main';
 import { useContext } from 'react';
 import ErrorPage from './ErrorPage';
+import ComplaintsTable from '@/lib/complaints/page';
 
 const ComplaintsPage = () => {
   const { store } = useContext(Context);
@@ -14,7 +15,7 @@ const ComplaintsPage = () => {
 		<div className="min-h-screen min-w-screen flex flex-col justify-between">
 			<DefaultLayout>
 				<div className="container flex justify-center items-center min-h-[80vh]">
-					hi
+          <ComplaintsTable />
 				</div>
 			</DefaultLayout>
 		</div>
