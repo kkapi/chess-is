@@ -19,7 +19,7 @@ const UserInfo = sequelize.define('info', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING, defaultValue: '' },
 	surname: { type: DataTypes.STRING, defaultValue: '' },
-	about: { type: DataTypes.STRING, defaultValue: ''},
+	about: { type: DataTypes.STRING, defaultValue: '' },
 	country: { type: DataTypes.STRING, defaultValue: '' },
 	rating: { type: DataTypes.STRING },
 	elo: { type: DataTypes.INTEGER, defaultValue: 1000 },
@@ -50,8 +50,19 @@ const Complaint = sequelize.define('complaint', {
 	reason: { type: DataTypes.STRING, allowNull: false },
 	description: { type: DataTypes.STRING, allowNull: false },
 	isReviewed: { type: DataTypes.BOOLEAN, defaultValue: false },
-	reviewer: { type: DataTypes.INTEGER },
+	isGameEnded: { type: DataTypes.BOOLEAN, defaultValue: false },
 });
+
+const Review = sequelize.define('review', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  result: {type: DataTypes.STRING},
+  description: {type: DataTypes.STRING},
+})
+
+User.hasMany(Review);
+Review.belongsTo(User);
+Complaint.hasOne(Review);
+Review.belongsTo(Complaint);
 
 User.hasOne(Token);
 Token.belongsTo(User);
@@ -95,9 +106,10 @@ Complaint.belongsTo(User, {
 });
 
 module.exports = {
-  UserInfo,
+	UserInfo,
 	User,
 	Token,
 	Game,
 	Complaint,
+  Review,
 };

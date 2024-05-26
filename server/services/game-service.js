@@ -1,17 +1,44 @@
-const { Game } = require('../models/models');
+const { Game, Complaint } = require('../models/models');
 
 class GameService {
-	async createGame(uuid, white, black, resultMessage, messages, pgn, time, type) {
+	async createGame(
+		uuid,
+		white,
+		black,
+		resultMessage,
+		messages,
+		pgn,
+		time,
+		type
+	) {
 		white = !isNaN(white) ? white : null;
 		black = !isNaN(black) ? black : null;
 
-		console.log({ uuid, white, black, resultMessage, messages, pgn, time, type });
+		console.log({
+			uuid,
+			white,
+			black,
+			resultMessage,
+			messages,
+			pgn,
+			time,
+			type,
+		});
+
+		await Complaint.update(
+      { isGameEnded: true },
+      {
+        where: {
+          gameUuid: uuid,
+        },
+      }
+    );
 
 		const game = await Game.create({
 			uuid,
 			white,
 			black,
-      resultMessage,
+			resultMessage,
 			messages,
 			pgn,
 			time,

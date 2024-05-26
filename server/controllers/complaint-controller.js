@@ -10,6 +10,15 @@ class ComplaintController {
 			next(error);
 		}
 	}
+
+  async getAllComplaints(req, res, next) {
+    try {
+      const complaints = await complaintService.getAllComplaints();
+      res.json(complaints);
+    } catch (error) {
+			next(error);
+		}
+  }
 }
 
 module.exports = new ComplaintController();

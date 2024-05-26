@@ -21,6 +21,7 @@ export const PLAYING_ROOM_ROUTE = '/play/:roomId';
 export const CREATENEWS_ROUTE = '/createnews';
 
 export const USERS_ROUTE = '/admin/users';
+export const COMPLAINTS_ROUTE = '/moder/complaints';
 
 export const CLIENT_URL = 'http://localhost:5173'
 

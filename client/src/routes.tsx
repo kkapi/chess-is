@@ -1,6 +1,7 @@
-import { ANALYSIS_GAME_ROUT, ANALYSIS_ROUTE, COMPUTER_ROUTE, CREATENEWS_ROUTE, FINDGAME_ROUTE, FINISHED_GAME_ROUTE, HOME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, NEW_PASSWORD_ROUTE, ONE_NEWS_ROUTE, PLAYING_ROOM_ROUTE, PROFILE_ROUTE, RECOVERY_ROUTE, REGISTRATION_ROUTE, USERS_ROUTE } from "./lib/constants"
+import { ANALYSIS_GAME_ROUT, ANALYSIS_ROUTE, COMPLAINTS_ROUTE, COMPUTER_ROUTE, CREATENEWS_ROUTE, FINDGAME_ROUTE, FINISHED_GAME_ROUTE, HOME_ROUTE, LOGIN_ROUTE, MATERIALS_ROUTE, NEWROOM_ROUTE, NEWS_ROUTE, NEW_PASSWORD_ROUTE, ONE_NEWS_ROUTE, PLAYING_ROOM_ROUTE, PROFILE_ROUTE, RECOVERY_ROUTE, REGISTRATION_ROUTE, USERS_ROUTE } from "./lib/constants"
 import AnalysisGamePage from "./pages/AnalysisGamePage"
 import AnalysisPage from "./pages/AnalysisPage"
+import ComplaintsPage from "./pages/ComplaintsPage"
 import ComputerGamePage from "./pages/ComputerGamePage"
 import CreateNewsPage from "./pages/CreateNewsPage"
 import CreateRoomPage from "./pages/CreateRoomPage"
@@ -92,5 +93,9 @@ export const routes = [
   {
     path: FINISHED_GAME_ROUTE,
     element: <FinishedGamePage />
+  },
+  {
+    path: COMPLAINTS_ROUTE,
+    element: <ComplaintsPage />
   }
 ]

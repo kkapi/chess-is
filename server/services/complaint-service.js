@@ -1,4 +1,4 @@
-const { Complaint } = require('../models/models');
+const { Complaint, Review, User } = require('../models/models');
 
 class ComplaintService {
 	async createComplaint(gameUuid, applicant, defendant, reason, description) {
@@ -14,6 +14,29 @@ class ComplaintService {
 		});
 
 		return gameUuid;
+	}
+
+	async getAllComplaints() {
+		const complaints = await Complaint.findAll({
+			where: {
+				isGameEnded: true,
+			},
+			include: [
+				{ model: Review, as: 'review' },
+				{
+					model: User,
+					as: 'applicantUser',
+					attributes: ['id', 'email', 'role', 'login'],
+				},
+				{
+					model: User,
+					as: 'defendantUser',
+					attributes: ['id', 'email', 'role', 'login'],
+				},
+			],
+		});
+
+		return complaints;
 	}
 }
 
