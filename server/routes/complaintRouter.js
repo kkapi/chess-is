@@ -5,8 +5,9 @@ const complaintController = require('../controllers/complaint-controller');
 
 const router = new Router();
 
-router.post('/new', authMiddleware, complaintController.createComplaint);
-router.get('/all', complaintController.getAllComplaints) //authMiddleware
+router.get('/all', complaintController.getAllComplaints); //authMiddleware
 
+router.post('/new', authMiddleware, complaintController.createComplaint);
+router.post('/addReview', complaintController.addReview);
 
 module.exports = router;

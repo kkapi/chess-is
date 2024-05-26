@@ -232,10 +232,20 @@ class UserService {
 
 	async getAllUsers() {
 		const users = await User.findAll({
-      where: {
-        isActivated: true,
-      },
-			attributes: ['id','email', 'role', 'isBlocked', 'isChatBlocked', 'isPrivate', 'login', 'createdAt'],
+			where: {
+				isActivated: true,
+			},
+			attributes: [
+				'id',
+				'email',
+				'role',
+				'isBlocked',
+				'isChatBlocked',
+				'isPrivate',
+				'login',
+				'createdAt',
+			],
+      order: [['id', 'ASC']],
 		});
 		return users;
 	}
@@ -335,7 +345,7 @@ class UserService {
 			where: {
 				[Op.or]: [{ white: userId }, { black: userId }],
 			},
-      order: [['createdAt', 'DESC']],
+			order: [['createdAt', 'DESC']],
 		});
 
 		return games;
@@ -343,22 +353,22 @@ class UserService {
 
 	async getGameInfo(gameUuid) {
 		const game = await Game.findOne({
-      where: {
-        uuid: gameUuid,
-      },
-      include: [
-        {
-          model: User,
-          as: 'whitePlayer',
-          attributes: ['id', 'login', 'email'],
-        },
-        {
-          model: User,
-          as: 'blackPlayer',
-          attributes: ['id', 'login', 'email'],
-        },
-      ],
-    });
+			where: {
+				uuid: gameUuid,
+			},
+			include: [
+				{
+					model: User,
+					as: 'whitePlayer',
+					attributes: ['id', 'login', 'email'],
+				},
+				{
+					model: User,
+					as: 'blackPlayer',
+					attributes: ['id', 'login', 'email'],
+				},
+			],
+		});
 
 		if (!game) {
 			throw ApiError.BadRequest('Игры с таким id не существует');
@@ -366,6 +376,40 @@ class UserService {
 
 		return game;
 	}
+
+	async banUser(userId) {
+		const user = await User.findOne({
+			where: {
+				id: userId,
+			},
+		});
+
+    if (!user) {
+      throw ApiError.BadRequest('Нет пользователя с таким id');
+    }
+
+    user.isBlocked = true;
+    await user.save();
+
+    return user.id;
+	}
+
+  async banChat(userId) {
+    const user = await User.findOne({
+			where: {
+				id: userId,
+			},
+		});
+
+    if (!user) {
+      throw ApiError.BadRequest('Нет пользователя с таким id');
+    }
+
+    user.isChatBlocked = true;
+    await user.save();
+
+    return user.id;
+  }
 }
 
 module.exports = new UserService();

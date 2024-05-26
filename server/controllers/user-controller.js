@@ -123,9 +123,9 @@ class UserController {
 		}
 	}
 
-  async getUserInfo(req, res, next) {
-    try {
-      const userId = req.params.id;
+	async getUserInfo(req, res, next) {
+		try {
+			const userId = req.params.id;
 
 			const user = await userService.getUserInfo(userId);
 
@@ -133,51 +133,93 @@ class UserController {
 		} catch (error) {
 			next(error);
 		}
-  }
+	}
 
-  async chageUserInfo(req, res, next) {
+	async chageUserInfo(req, res, next) {
+		try {
+			const {
+				userId,
+				name,
+				surname,
+				about,
+				rating,
+				isBlocked,
+				isChatBlocked,
+				isPrivate,
+				role,
+			} = req.body;
+
+			const data = await userService.chageUserInfo(
+				userId,
+				name,
+				surname,
+				about,
+				rating,
+				isBlocked,
+				isChatBlocked,
+				isPrivate,
+				role
+			);
+
+			res.json(data);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async changePassword(req, res, next) {
+		try {
+			const { userId, password, newPassword } = req.body;
+			await userService.changePassword(userId, password, newPassword);
+
+			res.json('ok');
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async getUserGames(req, res, next) {
+		try {
+			const userId = req.params.id;
+			const games = await userService.getUserGame(userId);
+
+			res.json(games);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async getGameInfo(req, res, next) {
+		try {
+			const gameUuid = req.params.uuid;
+			const game = await userService.getGameInfo(gameUuid);
+
+			res.json(game);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async banUser(req, res, next) {
+		try {
+			const { userId } = req.body;
+			await userService.banUser(userId);
+
+			res.json('ok');
+		} catch (error) {
+			next(error);
+		}
+	}
+
+  async banChat(req, res, next) {
     try {
-      const {userId, name, surname, about, rating, isBlocked, isChatBlocked, isPrivate, role} = req.body;
+			const { userId } = req.body;
+			await userService.banChat(userId);
 
-      const data = await userService.chageUserInfo(userId, name, surname, about, rating, isBlocked, isChatBlocked, isPrivate, role);
-
-      res.json(data);
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async changePassword(req, res, next) {
-    try {
-      const {userId, password, newPassword} = req.body;
-      await userService.changePassword(userId, password, newPassword);
-      
-      res.json('ok')
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async getUserGames(req, res, next) {
-    try {
-      const userId = req.params.id;
-      const games = await userService.getUserGame(userId);
-
-      res.json(games);
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async getGameInfo(req, res, next) {
-    try {
-      const gameUuid = req.params.uuid;
-      const game = await userService.getGameInfo(gameUuid);
-
-      res.json(game);
-    } catch (error) {
-      next(error)
-    }
+			res.json('ok');
+		} catch (error) {
+			next(error);
+		}
   }
 }
 

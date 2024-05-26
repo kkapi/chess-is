@@ -4,7 +4,6 @@ class ComplaintService {
 	async createComplaint(gameUuid, applicant, defendant, reason, description) {
 		defendant = !isNaN(defendant) ? defendant : null;
 
-		console.log({ gameUuid, applicant, defendant, reason, description });
 		const complaint = Complaint.create({
 			gameUuid,
 			applicant,
@@ -23,6 +22,11 @@ class ComplaintService {
 			},
 			include: [
 				{ model: Review, as: 'review' },
+        {
+          model: User,
+          as: 'reviewerUser',
+          attributes: ['id', 'email', 'role', 'login'],
+        },
 				{
 					model: User,
 					as: 'applicantUser',
@@ -38,6 +42,29 @@ class ComplaintService {
 
 		return complaints;
 	}
+
+  async addReview(userId, complaintId, result, description) {
+    const complaint = await Complaint.findOne({where: {
+      id: complaintId,
+    }})
+
+    if (!complaint || complaint.isReviewd) {
+      return;
+    }
+
+    const review = await Review.create({
+      result,
+      description,
+      userId,
+      complaintId: complaint.id,
+    })
+
+    complaint.isReviewed = true;
+    complaint.reviewer = userId;
+    await complaint.save();
+
+    return review.id;
+  }
 }
 
 module.exports = new ComplaintService();

@@ -20,5 +20,7 @@ router.post('/recoverpass', userController.recoverPassword);
 router.post('/resetpass', userController.resetPassword);
 router.post('/changeInfo', userController.chageUserInfo);
 router.post('/changepass', userController.changePassword);
+router.post('/banUser', userController.banUser); // authMiddleware
+router.post('/banChat', userController.banChat);
 
 module.exports = router;
