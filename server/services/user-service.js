@@ -206,6 +206,14 @@ class UserService {
 
 		const user = await User.findByPk(userData.id);
 
+    if (!user.isActivated) {
+      throw ApiError.UnauthorizedError();
+    }
+
+    const info = await UserInfo.findOne({where: {
+      userId: user.id,
+    }, attributes: ['elo']})
+
 		const tokens = tokenService.generateTokens({
 			id: user.id,
 			email: user.email,
@@ -226,6 +234,7 @@ class UserService {
 				role: user.role,
 				isChatBlocked: user.isChatBlocked,
 				isPrivate: user.isPrivate,
+        elo: info.elo,
 			},
 		};
 	}

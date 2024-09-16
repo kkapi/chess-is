@@ -217,6 +217,7 @@ module.exports = io => {
 				const {
 					userId,
 					login,
+          elo,
 					color,
 					variant,
 					timeControl,
@@ -264,22 +265,26 @@ module.exports = io => {
 					newRoom.white = {
 						userId: userId,
 						login: login,
+            elo: elo,
 					};
 				} else if (color === 'Черные') {
 					newRoom.black = {
 						userId: userId,
 						login: login,
+            elo: elo,
 					};
 				} else {
 					if (Math.random() > 0.5) {
 						newRoom.white = {
 							userId: userId,
 							login: login,
+              elo: elo,
 						};
 					} else {
 						newRoom.black = {
 							userId: userId,
 							login: login,
+              elo: elo,
 						};
 					}
 				}

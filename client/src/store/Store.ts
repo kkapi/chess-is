@@ -1,5 +1,3 @@
-import { API_URL } from '@/http';
-import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,6 +7,7 @@ export type User = {
 	email: string;
 	role: string;
   isChatBlocked: boolean;
+  elo: number;
 };
 
 export default class Store {

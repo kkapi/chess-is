@@ -149,6 +149,18 @@ class UserController {
 				role,
 			} = req.body;
 
+      console.log({
+				userId,
+				name,
+				surname,
+				about,
+				rating,
+				isBlocked,
+				isChatBlocked,
+				isPrivate,
+				role,
+			})
+
 			const data = await userService.chageUserInfo(
 				userId,
 				name,

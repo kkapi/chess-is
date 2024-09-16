@@ -55,6 +55,7 @@ const CreateRoomForm = () => {
 			{
 				userId: store.user?.id || store?.browserId,
 				login: store.user?.login || 'Аноним',
+        elo: store.user?.elo || 0,
 				color: data.color,
 				variant: 'Стандарт',
 				timeControl: data.timeControl,

@@ -395,7 +395,7 @@ const ProfilePage = () => {
 								История игр
 							</h1>
 							<div className="flex flex-col justify-start items-center h-[650px] overflow-y-auto gap-5 pr-4">
-								{!games?.length && <div>Нет информации об играх</div>}
+								{(!games?.length || (user?.isPrivate && user?.id !== store.user?.id)) && <div>Нет информации об играх</div>}
 								{games?.map(game => (
 									<div
 										className="border rounded-md p-4 w-full cursor-pointer hover:border-blue-300 hover:bg-muted transition-colors duration-300 ease-in-out"
@@ -421,63 +421,7 @@ const ProfilePage = () => {
 											</span>
 										</div>
 									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
-								{games?.map(game => (
-									<div className="border rounded-md p-4 w-full">
-										<div>Дата и время: {formatDateTime(game?.createdAt)}</div>
-										<div>Результат: {game?.resultMessage}</div>
-										<div>Цвет: {id == game?.black ? 'Черные' : 'Белые'}</div>
-									</div>
-								))}
+								))}							
 							</div>
 						</div>
 					</div>

@@ -22,6 +22,7 @@ function App() {
   
         const { user, accessToken } = response.data;
         localStorage.setItem('token', accessToken);
+        console.log(user);
         store.user = user;
         store.isAuth = true;
       } catch (e) {
